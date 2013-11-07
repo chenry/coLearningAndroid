@@ -1,50 +1,34 @@
 package com.colearning.android.podcastpoll;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
-public class PodcastPollActivity extends Activity {
-	private static final String TAG = "PodcastCatcherActivity";
-
-	private Button btnYes;
-	private Button btnNo;
+public class PodcastPollActivity extends FragmentActivity {
+	private static final String TAG = "PodcastPollActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_podcast_catcher);
+		setContentView(R.layout.activity_fragment);
 
-		Button btnYes = (Button) findViewById(R.id.btnYes);
-		btnYes.setOnClickListener(new View.OnClickListener() {
+		FragmentManager fm = getSupportFragmentManager();
 
-			@Override
-			public void onClick(View v) {
-				Log.i(TAG, "Yes was clicked!!!");
-				handleStartingLikePodcastResponseActivity(true);
-			}
-		});
+		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
+		if (fragment == null) {
+			fragment = new PodcastPollFragment();
+			//@formatter:off
+			fm
+				.beginTransaction()
+				.add(R.id.fragmentContainer, fragment)
+				.commit();
+			//@formatter:on
+		}
 
-		Button btnNo = (Button) findViewById(R.id.btnNo);
-		btnNo.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Log.i(TAG, "No was clicked!!!");
-				handleStartingLikePodcastResponseActivity(false);
-			}
-		});
-	}
-
-	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
-		Intent intent = new Intent(PodcastPollActivity.this, LikePodcastResponseActivity.class);
-		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
-		startActivityForResult(intent, 0);
 	}
 
 	@Override
@@ -57,13 +41,6 @@ public class PodcastPollActivity extends Activity {
 		}
 
 		Toast.makeText(this, stringId, Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.podcast_catcher, menu);
-		return true;
 	}
 
 	@Override
