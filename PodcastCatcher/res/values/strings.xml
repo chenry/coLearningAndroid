@@ -7,5 +7,6 @@
     <string name="do_you_like_podcasts">Do you like Podcasts?</string>
     <string name="button_yes">Yes</string>
     <string name="button_no">No</string>
+    <string name="title_activity_like_podcast_response">LikePodcastResponseActivity</string>
 
 </resources>
