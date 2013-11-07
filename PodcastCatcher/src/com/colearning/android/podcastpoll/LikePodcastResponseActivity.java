@@ -1,4 +1,4 @@
-package com.colearning.android.podcastcatcher;
+package com.colearning.android.podcastpoll;
 
 import android.app.Activity;
 import android.content.Intent;
