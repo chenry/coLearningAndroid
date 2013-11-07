@@ -1,69 +1,14 @@
 package com.colearning.android.podcastpoll;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-public class PodcastPollActivity extends Activity {
-	private static final String TAG = "PodcastCatcherActivity";
-
-	private Button btnYes;
-	private Button btnNo;
+public class PodcastPollActivity extends OneFragmentFragmentActivity {
+	private static final String TAG = "PodcastPollActivity";
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_podcast_catcher);
-
-		Button btnYes = (Button) findViewById(R.id.btnYes);
-		btnYes.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Log.i(TAG, "Yes was clicked!!!");
-				handleStartingLikePodcastResponseActivity(true);
-			}
-		});
-
-		Button btnNo = (Button) findViewById(R.id.btnNo);
-		btnNo.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Log.i(TAG, "No was clicked!!!");
-				handleStartingLikePodcastResponseActivity(false);
-			}
-		});
-	}
-
-	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
-		Intent intent = new Intent(PodcastPollActivity.this, LikePodcastResponseActivity.class);
-		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
-		startActivityForResult(intent, 0);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		boolean didChangeMind = data.getBooleanExtra(LikePodcastResponseActivity.CHANGED_MIND, false);
-
-		int stringId = R.string.change_mind_no_response;
-		if (didChangeMind) {
-			stringId = R.string.change_mind_yes_response;
-		}
-
-		Toast.makeText(this, stringId, Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.podcast_catcher, menu);
-		return true;
+	public Fragment createFragment() {
+		return new PodcastPollFragment();
 	}
 
 	@Override
