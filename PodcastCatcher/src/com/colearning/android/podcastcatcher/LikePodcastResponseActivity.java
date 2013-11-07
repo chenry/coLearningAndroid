@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.widget.TextView;
 
 public class LikePodcastResponseActivity extends Activity {
-
+	public static final String DOES_LIKE_PODCASTS = "com.colearning.android.podcastcatcher.doesLikePodcasts";
 	private TextView txtLikePodcastResponse;
 
 	@Override
@@ -15,7 +15,15 @@ public class LikePodcastResponseActivity extends Activity {
 		setContentView(R.layout.activity_like_podcast_response);
 		txtLikePodcastResponse = (TextView) findViewById(R.id.txtLikePodcastResponse);
 
-		txtLikePodcastResponse.setText("I have no clue if you like podcasts or not...");
+		boolean doesLikePodcasts = getIntent().getBooleanExtra(DOES_LIKE_PODCASTS, false);
+		String response = "I have no clue if you like podcasts or not...";
+		if (doesLikePodcasts) {
+			response = "I am so happy that you do like podcasts";
+		} else {
+			response = "You are not going to like this application...";
+		}
+
+		txtLikePodcastResponse.setText(response);
 	}
 
 	@Override

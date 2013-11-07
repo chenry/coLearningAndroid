@@ -25,8 +25,7 @@ public class PodcastCatcherActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG, "Yes was clicked!!!");
-				Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
-				startActivity(intent);
+				handleStartingLikePodcastResponseActivity(true);
 			}
 		});
 
@@ -36,10 +35,16 @@ public class PodcastCatcherActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG, "No was clicked!!!");
-				Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
-				startActivity(intent);
+				handleStartingLikePodcastResponseActivity(false);
 			}
 		});
+	}
+
+	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
+		Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
+		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
+		startActivity(intent);
+
 	}
 
 	@Override
