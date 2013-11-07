@@ -15,4 +15,24 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtLikePodcastResponse"
+        android:layout_centerHorizontal="true" >
+
+        <Button
+            android:id="@+id/btnChangeMindYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_yes" />
+
+        <Button
+            android:id="@+id/btnChangeMindNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_no" />
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class PodcastCatcherActivity extends Activity {
 	private static final String TAG = "PodcastCatcherActivity";
@@ -43,8 +44,19 @@ public class PodcastCatcherActivity extends Activity {
 	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
 		Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
 		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
+	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		boolean didChangeMind = data.getBooleanExtra(LikePodcastResponseActivity.CHANGED_MIND, false);
+
+		int stringId = R.string.change_mind_no_response;
+		if (didChangeMind) {
+			stringId = R.string.change_mind_yes_response;
+		}
+
+		Toast.makeText(this, stringId, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
