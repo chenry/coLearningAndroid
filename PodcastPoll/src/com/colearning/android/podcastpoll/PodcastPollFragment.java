@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class PodcastPollFragment extends Fragment {
 
@@ -45,8 +46,20 @@ public class PodcastPollFragment extends Fragment {
 
 	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
 		Intent intent = new Intent(getActivity(), LikePodcastResponseActivity.class);
-		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
+		intent.putExtra(LikePodcastResponseFragment.DOES_LIKE_PODCASTS, doesLikePodcasts);
 		startActivityForResult(intent, 0);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		boolean didChangeMind = data.getBooleanExtra(LikePodcastResponseFragment.CHANGED_MIND, false);
+
+		int stringId = R.string.change_mind_no_response;
+		if (didChangeMind) {
+			stringId = R.string.change_mind_yes_response;
+		}
+
+		Toast.makeText(getActivity(), stringId, Toast.LENGTH_SHORT).show();
 	}
 
 }

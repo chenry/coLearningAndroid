@@ -1,12 +1,10 @@
 package com.colearning.android.podcastpoll;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class PodcastPollActivity extends FragmentActivity {
 	private static final String TAG = "PodcastPollActivity";
@@ -29,18 +27,6 @@ public class PodcastPollActivity extends FragmentActivity {
 			//@formatter:on
 		}
 
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		boolean didChangeMind = data.getBooleanExtra(LikePodcastResponseActivity.CHANGED_MIND, false);
-
-		int stringId = R.string.change_mind_no_response;
-		if (didChangeMind) {
-			stringId = R.string.change_mind_yes_response;
-		}
-
-		Toast.makeText(this, stringId, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
