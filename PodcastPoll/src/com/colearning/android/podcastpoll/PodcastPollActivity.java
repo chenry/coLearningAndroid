@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class PodcastCatcherActivity extends Activity {
+public class PodcastPollActivity extends Activity {
 	private static final String TAG = "PodcastCatcherActivity";
 
 	private Button btnYes;
@@ -42,7 +42,7 @@ public class PodcastCatcherActivity extends Activity {
 	}
 
 	public void handleStartingLikePodcastResponseActivity(boolean doesLikePodcasts) {
-		Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
+		Intent intent = new Intent(PodcastPollActivity.this, LikePodcastResponseActivity.class);
 		intent.putExtra(LikePodcastResponseActivity.DOES_LIKE_PODCASTS, doesLikePodcasts);
 		startActivityForResult(intent, 0);
 	}
