@@ -1,6 +1,7 @@
 package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +25,8 @@ public class PodcastCatcherActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG, "Yes was clicked!!!");
+				Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
+				startActivity(intent);
 			}
 		});
 
@@ -33,6 +36,8 @@ public class PodcastCatcherActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i(TAG, "No was clicked!!!");
+				Intent intent = new Intent(PodcastCatcherActivity.this, LikePodcastResponseActivity.class);
+				startActivity(intent);
 			}
 		});
 	}
