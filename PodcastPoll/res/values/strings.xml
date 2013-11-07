@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PodcastCatcher</string>
+    <string name="app_name">Podcast Poll</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="do_you_like_podcasts">Do you like Podcasts?</string>
     <string name="button_yes">Yes</string>
     <string name="button_no">No</string>
-    <string name="title_activity_like_podcast_response">LikePodcastResponseActivity</string>
+    <string name="title_activity_like_podcast_response">Want to change your mind?</string>
     <string name="change_mind_yes_response">Changed Mind...</string>
     <string name="change_mind_no_response">Did NOT Change Mind</string>
 
