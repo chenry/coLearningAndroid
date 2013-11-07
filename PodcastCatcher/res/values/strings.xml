@@ -8,5 +8,7 @@
     <string name="button_yes">Yes</string>
     <string name="button_no">No</string>
     <string name="title_activity_like_podcast_response">LikePodcastResponseActivity</string>
+    <string name="change_mind_yes_response">Changed Mind...</string>
+    <string name="change_mind_no_response">Did NOT Change Mind</string>
 
 </resources>
