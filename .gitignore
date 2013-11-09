@@ -19,4 +19,7 @@
 /*.iws
 /.idea/
 
-
+PodcastCatcher/bin
+PodcastCatcher/gen
+PodcastCatcher/.classpath
+PodcastCatcher/.project
