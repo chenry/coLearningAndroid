@@ -13,11 +13,3 @@
 # Java class files
 *.class
 
-# Top level Intellij project files
-/*.iml
-/*.ipr
-/*.iws
-/.idea/
-
-PodcastCatcher/bin
-PodcastCatcher/gen
