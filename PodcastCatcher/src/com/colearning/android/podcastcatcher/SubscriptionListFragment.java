@@ -29,10 +29,8 @@ public class SubscriptionListFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Log.i(TAG, "ListView: " + l);
-		Log.i(TAG, "View: " + v);
-		Log.i(TAG, "position: " + position);
-		Log.i(TAG, "id: " + id);
+		Subscription item = ((SubscriptionListAdapter) getListAdapter()).getItem(position);
+		Log.i(TAG, "Selected title: " + item.getTitle());
 	}
 
 	private class SubscriptionListAdapter extends ArrayAdapter<Subscription> {
