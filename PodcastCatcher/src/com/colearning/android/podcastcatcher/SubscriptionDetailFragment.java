@@ -43,6 +43,7 @@ public class SubscriptionDetailFragment extends Fragment {
 		((TextView) view.findViewById(R.id.txtAuthorValue)).setText(subscription.getAuthor());
 		((TextView) view.findViewById(R.id.txtCategoryValue)).setText(subscription.getCategory());
 		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getLink());
+		((TextView) view.findViewById(R.id.txtSummaryValue)).setText(subscription.getSummary());
 
 		return view;
 	}
