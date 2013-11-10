@@ -11,7 +11,7 @@ public class SubscriptionList {
 	private SubscriptionList() {
 		subscriptions = new ArrayList<Subscription>();
 		for (int i = 0; i < 20; i++) {
-			Subscription subscription = new Subscription("Title #" + i);
+			Subscription subscription = new Subscription("Title #" + i, "Subtitle: " + i);
 			subscriptions.add(subscription);
 		}
 	}

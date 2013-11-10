@@ -49,6 +49,9 @@ public class SubscriptionListFragment extends ListFragment {
 			TextView txtView1 = (TextView) convertView.findViewById(android.R.id.text1);
 			txtView1.setText(currSubscription.getTitle());
 
+			TextView txtView2 = (TextView) convertView.findViewById(android.R.id.text2);
+			txtView2.setText(currSubscription.getSubTitle());
+
 			return convertView;
 		}
 
