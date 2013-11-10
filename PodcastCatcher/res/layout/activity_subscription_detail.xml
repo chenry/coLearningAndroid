@@ -16,8 +16,8 @@
 
         <TextView
             android:id="@+id/txtTitleLabel"
-            style="@style/TableRow_Label" 
-            android:text="Label"/>
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_title_label" />
 
         <TextView
             android:id="@+id/txtTitleValue"
@@ -29,7 +29,8 @@
 
         <TextView
             android:id="@+id/txtSubTitleLabel"
-            style="@style/TableRow_Label" />
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_subtitle_label"  />
 
         <TextView
             android:id="@+id/txtSubTitleValue"
@@ -40,7 +41,8 @@
 
         <TextView
             android:id="@+id/txtAuthorLabel"
-            style="@style/TableRow_Label" />
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_author_label"  />
 
         <TextView
             android:id="@+id/txtAuthorValue"
@@ -51,7 +53,8 @@
 
         <TextView
             android:id="@+id/txtCategoryLabel"
-            style="@style/TableRow_Label" />
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_category_label"  />
 
         <TextView
             android:id="@+id/txtCategoryValue"
@@ -62,7 +65,8 @@
 
         <TextView
             android:id="@+id/txtLinkLabel"
-            style="@style/TableRow_Label" />
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_link_label"  />
 
         <TextView
             android:id="@+id/txtLinkValue"
