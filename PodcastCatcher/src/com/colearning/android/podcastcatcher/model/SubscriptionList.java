@@ -2,6 +2,7 @@ package com.colearning.android.podcastcatcher.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SubscriptionList {
 
@@ -11,7 +12,14 @@ public class SubscriptionList {
 	private SubscriptionList() {
 		subscriptions = new ArrayList<Subscription>();
 		for (int i = 0; i < 20; i++) {
-			Subscription subscription = new Subscription("Title #" + i);
+			Subscription subscription = new Subscription("Title #" + i, "Subtitle: " + i);
+			subscription.setAuthor("Peter Pan " + i);
+			subscription.setCategory("Tech");
+			subscription.setImageUrl("https://www.google.com/images/srpr/logo11w.png");
+			subscription.setLink("http://agiletoolkit.libsyn.com");
+			subscription
+					.setSummary(i
+							+ "The Empire Podcast is the last word on movies from the biggest movie magazine on the planet, including each week's news, reviews and interviews");
 			subscriptions.add(subscription);
 		}
 	}
@@ -25,5 +33,16 @@ public class SubscriptionList {
 
 	public List<Subscription> getSubscriptions() {
 		return subscriptions;
+	}
+
+	public Subscription findSubscription(UUID subscriptionId) {
+		Subscription matchingSubscription = null;
+		for (Subscription currSubscription : subscriptions) {
+			if (subscriptionId.equals(currSubscription.getId())) {
+				matchingSubscription = currSubscription;
+				break;
+			}
+		}
+		return matchingSubscription;
 	}
 }

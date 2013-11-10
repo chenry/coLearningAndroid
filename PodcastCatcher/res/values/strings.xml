@@ -3,6 +3,12 @@
 
     <string name="app_name">PodcastCatcher</string>
     <string name="action_settings">Settings</string>
+    <string name="subscription_title_label">Title:</string>
+    <string name="subscription_subtitle_label">Subtitle:</string>
+    <string name="subscription_author_label">Author:</string>
+    <string name="subscription_category_label">Category:</string>
+    <string name="subscription_link_label">Link:</string>
+    <string name="title_activity_subscription_detail">SubscriptionDetailActivity</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>

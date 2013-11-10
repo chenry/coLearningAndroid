@@ -2,6 +2,7 @@ package com.colearning.android.podcastcatcher;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -31,6 +32,11 @@ public class SubscriptionListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Subscription item = ((SubscriptionListAdapter) getListAdapter()).getItem(position);
 		Log.i(TAG, "Selected title: " + item.getTitle());
+
+		Intent intent = new Intent(getActivity(), SubscriptionDetailActivity.class);
+		intent.putExtra(SubscriptionDetailFragment.SUBSCRIPTION_ID, item.getId());
+
+		startActivity(intent);
 	}
 
 	private class SubscriptionListAdapter extends ArrayAdapter<Subscription> {
@@ -48,6 +54,9 @@ public class SubscriptionListFragment extends ListFragment {
 
 			TextView txtView1 = (TextView) convertView.findViewById(android.R.id.text1);
 			txtView1.setText(currSubscription.getTitle());
+
+			TextView txtView2 = (TextView) convertView.findViewById(android.R.id.text2);
+			txtView2.setText(currSubscription.getSubTitle());
 
 			return convertView;
 		}
