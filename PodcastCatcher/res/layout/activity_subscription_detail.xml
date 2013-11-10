@@ -4,31 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <!--
-	private String author;
-	private String summary;
-	private String category;
-	private String link;
-	private String imageUrl;
-    -->
-
     <TableRow style="@style/TableRow" >
 
         <TextView
-            android:id="@+id/txtTitleLabel"
             style="@style/TableRow_Label"
             android:text="@string/subscription_title_label" />
 
         <TextView
             android:id="@+id/txtTitleValue"
-            style="@style/TableRow_Value" 
-            android:text="value"/>
+            style="@style/TableRow_Value"/>
     </TableRow>
 
     <TableRow style="@style/TableRow" >
 
         <TextView
-            android:id="@+id/txtSubTitleLabel"
             style="@style/TableRow_Label"
             android:text="@string/subscription_subtitle_label"  />
 
@@ -40,7 +29,6 @@
     <TableRow style="@style/TableRow" >
 
         <TextView
-            android:id="@+id/txtAuthorLabel"
             style="@style/TableRow_Label"
             android:text="@string/subscription_author_label"  />
 
@@ -52,7 +40,6 @@
     <TableRow style="@style/TableRow" >
 
         <TextView
-            android:id="@+id/txtCategoryLabel"
             style="@style/TableRow_Label"
             android:text="@string/subscription_category_label"  />
 
@@ -64,7 +51,6 @@
     <TableRow style="@style/TableRow" >
 
         <TextView
-            android:id="@+id/txtLinkLabel"
             style="@style/TableRow_Label"
             android:text="@string/subscription_link_label"  />
 
@@ -73,4 +59,23 @@
             style="@style/TableRow_Value" />
     </TableRow>
 
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            style="@style/TableRow_Label"
+            android:text="@string/subscription_summary_label"/>
+
+        <TextView
+            style="@style/TableRow_Label"
+            android:text=""/>
+    </TableRow>
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtSummaryValue"
+            style="@style/TableRow_Value"
+            android:layout_span="2" 
+            android:paddingLeft="0dip"/>
+    </TableRow>
 </TableLayout>

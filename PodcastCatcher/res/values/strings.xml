@@ -9,6 +9,6 @@
     <string name="subscription_category_label">Category:</string>
     <string name="subscription_link_label">Link:</string>
     <string name="title_activity_subscription_detail">SubscriptionDetailActivity</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="subscription_summary_label">Summary:</string>
+    
 </resources>
