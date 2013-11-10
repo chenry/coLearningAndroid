@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TableLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!--
+	private String author;
+	private String summary;
+	private String category;
+	private String link;
+	private String imageUrl;
+    -->
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtTitleLabel"
+            style="@style/TableRow_Label" 
+            android:text="Label"/>
+
+        <TextView
+            android:id="@+id/txtTitleValue"
+            style="@style/TableRow_Value" 
+            android:text="value"/>
+    </TableRow>
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtSubTitleLabel"
+            style="@style/TableRow_Label" />
+
+        <TextView
+            android:id="@+id/txtSubTitleValue"
+            style="@style/TableRow_Value" />
+    </TableRow>
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtAuthorLabel"
+            style="@style/TableRow_Label" />
+
+        <TextView
+            android:id="@+id/txtAuthorValue"
+            style="@style/TableRow_Value" />
+    </TableRow>
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtCategoryLabel"
+            style="@style/TableRow_Label" />
+
+        <TextView
+            android:id="@+id/txtCategoryValue"
+            style="@style/TableRow_Value" />
+    </TableRow>
+
+    <TableRow style="@style/TableRow" >
+
+        <TextView
+            android:id="@+id/txtLinkLabel"
+            style="@style/TableRow_Label" />
+
+        <TextView
+            android:id="@+id/txtLinkValue"
+            style="@style/TableRow_Value" />
+    </TableRow>
+
+</TableLayout>
