@@ -5,12 +5,14 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.feed.FeedParser;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionList;
 
@@ -28,8 +30,11 @@ public class SubscriptionListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		subscriptions = SubscriptionList.create().getSubscriptions();
-
 		setListAdapter(new SubscriptionListAdapter(subscriptions));
+
+		String urlPath = "http://feeds.feedburner.com/javaposse";
+		Subscription currSubscription = new FeedParser().parseSubscription(urlPath);
+		Log.i(TAG, "Subscription: Title: " + currSubscription.getTitle() + ", sub: " + currSubscription.getSubTitle());
 	}
 
 	@Override

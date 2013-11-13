@@ -12,7 +12,9 @@ public class SubscriptionList {
 	private SubscriptionList() {
 		subscriptions = new ArrayList<Subscription>();
 		for (int i = 0; i < 20; i++) {
-			Subscription subscription = new Subscription("Title #" + i, "Subtitle: " + i);
+			Subscription subscription = new Subscription();
+			subscription.setTitle("Title #" + i);
+			subscription.setSubTitle("Subtitle: " + i);
 			subscription.setAuthor("Peter Pan " + i);
 			subscription.setCategory("Tech");
 			subscription.setImageUrl("https://www.google.com/images/srpr/logo11w.png");
