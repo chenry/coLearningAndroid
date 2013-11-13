@@ -2,10 +2,9 @@ package com.colearning.android.podcastcatcher;
 
 import java.util.List;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,6 +17,11 @@ import com.colearning.android.podcastcatcher.model.SubscriptionList;
 public class SubscriptionListFragment extends ListFragment {
 	private static final String TAG = "SubscriptionListFragment";
 	private List<Subscription> subscriptions;
+	private SubscriptionItemSelectedListener itemSelectedListener;
+
+	public interface SubscriptionItemSelectedListener {
+		public void itemSelected(Subscription subscription);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,7 @@ public class SubscriptionListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Subscription item = ((SubscriptionListAdapter) getListAdapter()).getItem(position);
-		Log.i(TAG, "Selected title: " + item.getTitle());
-
-		Intent intent = new Intent(getActivity(), SubscriptionDetailActivity.class);
-		intent.putExtra(SubscriptionDetailFragment.SUBSCRIPTION_ID, item.getId());
-
-		startActivity(intent);
+		itemSelectedListener.itemSelected(item);
 	}
 
 	private class SubscriptionListAdapter extends ArrayAdapter<Subscription> {
@@ -61,6 +60,18 @@ public class SubscriptionListFragment extends ListFragment {
 			return convertView;
 		}
 
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		itemSelectedListener = (SubscriptionItemSelectedListener) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		itemSelectedListener = null;
 	}
 
 }
