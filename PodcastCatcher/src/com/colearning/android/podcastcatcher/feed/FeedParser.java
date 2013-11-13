@@ -9,8 +9,6 @@ import java.net.URL;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.util.Log;
-
 import com.colearning.android.podcastcatcher.model.Subscription;
 
 public class FeedParser {
@@ -34,7 +32,7 @@ public class FeedParser {
 				}
 
 				if (eventType == XmlPullParser.START_TAG) {
-					Log.i(TAG, "Name: " + parser.getName());
+					// Log.i(TAG, "Name: " + parser.getName());
 					if ("item".equals(parser.getName())) {
 						hasSeenItem = true;
 						eventType = parser.next();

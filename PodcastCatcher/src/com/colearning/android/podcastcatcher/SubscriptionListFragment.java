@@ -32,9 +32,13 @@ public class SubscriptionListFragment extends ListFragment {
 		subscriptions = SubscriptionList.create().getSubscriptions();
 		setListAdapter(new SubscriptionListAdapter(subscriptions));
 
-		String urlPath = "http://feeds.feedburner.com/javaposse";
-		Subscription currSubscription = new FeedParser().parseSubscription(urlPath);
-		Log.i(TAG, "Subscription: Title: " + currSubscription.getTitle() + ", sub: " + currSubscription.getSubTitle());
+		FeedParser feedParser = new FeedParser();
+		String urlPath1 = "http://feeds.feedburner.com/javaposse";
+		String urlPath2 = "http://feeds.feedburner.com/AndroidCentralPodcast";
+		Subscription javaPosseSubscription = feedParser.parseSubscription(urlPath1);
+		Log.i(TAG, "Subscription: Title: " + javaPosseSubscription.getTitle() + ", sub: " + javaPosseSubscription.getSubTitle());
+		Subscription androidPodcastSubscription = feedParser.parseSubscription(urlPath2);
+		Log.i(TAG, "Subscription: Title: " + androidPodcastSubscription.getTitle() + ", sub: " + androidPodcastSubscription.getSubTitle());
 	}
 
 	@Override
