@@ -15,6 +15,7 @@ public class Subscription {
 	private String feedUrl;
 	private String imageUrl;
 	private Date lastSyncDate;
+	private Date lastPubDate;
 
 	private List<SubscriptionItem> subscriptionItems;
 
@@ -107,6 +108,21 @@ public class Subscription {
 
 	public void setLastSyncDate(Date lastSyncDate) {
 		this.lastSyncDate = lastSyncDate;
+	}
+
+	public Date getLastPubDate() {
+		return lastPubDate;
+	}
+
+	public void setLastPubDate(Date lastPubDate) {
+		this.lastPubDate = lastPubDate;
+	}
+
+	@Override
+	public String toString() {
+		return "Subscription [id=" + id + ", title=" + title + ", subTitle=" + subTitle + ", author=" + author + ", summary=" + summary + ", category="
+				+ category + ", feedUrl=" + feedUrl + ", imageUrl=" + imageUrl + ", lastSyncDate=" + lastSyncDate + ", lastPubDate=" + lastPubDate
+				+ ", subscriptionItems=" + subscriptionItems + "]";
 	}
 
 }
