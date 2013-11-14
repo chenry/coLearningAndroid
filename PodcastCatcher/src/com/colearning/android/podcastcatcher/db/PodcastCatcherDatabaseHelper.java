@@ -1,5 +1,6 @@
 package com.colearning.android.podcastcatcher.db;
 
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -27,6 +28,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_SUBSCRIPTION_CATEGORY = "category";
 	public static final String COLUMN_SUBSCRIPTION_IMAGE_URL = "image_url";
 	public static final String COLUMN_SUBSCRIPTION_LAST_SYNC_TIME = "last_sync_time";
+	public static final String COLUMN_SUBSCRIPTION_LAST_PUB_DATE = "last_pub_date";
 
 	public static final String TABLE_SUBSCRIPTION_ITEM = "subscription_item";
 	public static final String COLUMN_SUBSCRIPTION_ITEM_ID = "_id";
@@ -56,7 +58,8 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 				"summary varchar(200), " +
 				"category varchar(200), " +
 				"image_url varchar(200), " +
-				"last_sync_time integer" +
+				"last_sync_time integer, " +
+				"last_pub_date integer" +
 				")"
 		);
 		//@formatter:on
@@ -91,7 +94,9 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		contentValues.put(COLUMN_SUBSCRIPTION_SUMMARY, subscription.getSummary());
 		contentValues.put(COLUMN_SUBSCRIPTION_TITLE, subscription.getTitle());
 		Long lastSyncTime = (subscription.getLastSyncDate() == null) ? null : subscription.getLastSyncDate().getTime();
+		Long lastPubDate = (subscription.getLastPubDate() == null) ? null : subscription.getLastPubDate().getTime();
 		contentValues.put(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME, lastSyncTime);
+		contentValues.put(COLUMN_SUBSCRIPTION_LAST_PUB_DATE, lastPubDate);
 		return getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, contentValues);
 	}
 
@@ -121,10 +126,8 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void insertTestSubscriptions() {
-		long subscriptionId = insertSubscription(createSubscription(0));
-		insertSubscriptionItem(subscriptionId, toSubscriptionItem(0));
-		insertSubscriptionItem(subscriptionId, toSubscriptionItem(1));
-		insertSubscriptionItem(subscriptionId, toSubscriptionItem(2));
+		insertSubscription(createSubscription("http://feeds.feedburner.com/javaposse"));
+		insertSubscription(createSubscription("http://feeds.feedburner.com/AndroidCentralPodcast"));
 	}
 
 	private SubscriptionItem toSubscriptionItem(int i) {
@@ -140,14 +143,14 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		return item;
 	}
 
-	private Subscription createSubscription(int i) {
+	private Subscription createSubscription(String urlPath) {
 		Subscription subscription = new Subscription();
-		subscription.setTitle("Title #" + i);
-		subscription.setSubTitle("A subtitle " + i);
+		subscription.setTitle("Title #");
+		subscription.setSubTitle("A subtitle ");
 		subscription.setAuthor("Carlus Henry");
 		subscription.setCategory("Tech");
 		subscription.setSummary("This is just something silly");
-		subscription.setFeedUrl("http://feeds.feedburner.com/javaposse");
+		subscription.setFeedUrl(urlPath);
 		return subscription;
 	}
 
@@ -206,6 +209,8 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 			String subTitle = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUBTITLE));
 			String summary = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUMMARY));
 			String title = getString(getColumnIndex(COLUMN_SUBSCRIPTION_TITLE));
+			long lastSyncTimeLong = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME));
+			long lastPubDateLong = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_LAST_PUB_DATE));
 
 			subscription.setId(subscriptioinId);
 			subscription.setAuthor(author);
@@ -215,6 +220,8 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 			subscription.setSubTitle(subTitle);
 			subscription.setSummary(summary);
 			subscription.setTitle(title);
+			subscription.setLastSyncDate(new Date(lastSyncTimeLong));
+			subscription.setLastPubDate(new Date(lastPubDateLong));
 
 			return subscription;
 

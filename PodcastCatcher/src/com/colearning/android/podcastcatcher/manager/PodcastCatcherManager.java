@@ -3,22 +3,30 @@ package com.colearning.android.podcastcatcher.manager;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
+import com.colearning.android.podcastcatcher.feed.FeedParser;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
 public class PodcastCatcherManager {
 
-	private PodcastCatcherDatabaseHelper podcastDBHelper;
+	private static final String TAG = "PodcastCatcherManager";
+
 	private static PodcastCatcherManager podcastCatcherManager;
+
+	private PodcastCatcherDatabaseHelper podcastDBHelper;
+	private FeedParser feedParser;
 
 	private PodcastCatcherManager(Context context) {
 		podcastDBHelper = new PodcastCatcherDatabaseHelper(context);
 		podcastDBHelper.deleteAll();
 		podcastDBHelper.insertTestSubscriptions();
+
+		feedParser = new FeedParser();
 	}
 
 	public static PodcastCatcherManager create(Context context) {
@@ -68,4 +76,22 @@ public class PodcastCatcherManager {
 		return podcastDBHelper.findSubscriptionItemsBySubscriptionId(subscriptionId);
 	}
 
+	public void checkSubscriptionFeedsAndUpdateIfNecessary() {
+		SubscriptionCursor subscriptionCursor = podcastDBHelper.querySubscription();
+
+		subscriptionCursor.moveToFirst();
+		while (subscriptionCursor.isAfterLast() == false) {
+			Subscription subscription = subscriptionCursor.getSubscription();
+			Subscription feedSubscription = feedParser.parseSubscription(subscription.getFeedUrl());
+
+			updateSubscriptionIfNecessary(subscription, feedSubscription);
+
+			subscriptionCursor.moveToNext();
+		}
+	}
+
+	private void updateSubscriptionIfNecessary(Subscription persistedSubscription, Subscription feedSubscription) {
+		Log.i(TAG, "feedSubscription: " + feedSubscription);
+
+	}
 }

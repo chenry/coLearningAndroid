@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -39,8 +43,30 @@ public class FeedParser {
 						continue;
 					}
 
+					// private Date lastPubDate;
+
 					if ("title".equals(parser.getName())) {
 						subscription.setTitle(getTextIfAvailable(parser));
+					}
+
+					if ("pubDate".equals(parser.getName())) {
+						subscription.setLastPubDate(getDateIfAvailable(parser));
+					}
+
+					if ("image/url".equals(parser.getName())) {
+						// FIXME CH: implement this later
+					}
+
+					if ("media:category".equals(parser.getName())) {
+						subscription.setCategory(getTextIfAvailable(parser));
+					}
+
+					if ("description".equals(parser.getName())) {
+						subscription.setSummary(getTextIfAvailable(parser));
+					}
+
+					if ("itunes:author".equals(parser.getName())) {
+						subscription.setAuthor(getTextIfAvailable(parser));
 					}
 
 					if ("itunes:subtitle".equals(parser.getName())) {
@@ -54,6 +80,18 @@ public class FeedParser {
 		}
 
 		return subscription;
+	}
+
+	private Date getDateIfAvailable(XmlPullParser parser) throws Exception {
+		String dateAsString = getTextIfAvailable(parser);
+		if (dateAsString == null) {
+			return null;
+		}
+
+		String betterDateAsString = dateAsString.split("\\+")[0];
+
+		DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+		return formatter.parse(betterDateAsString, new ParsePosition(0));
 	}
 
 	private String getTextIfAvailable(XmlPullParser parser) throws Exception {

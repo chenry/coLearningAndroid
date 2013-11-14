@@ -2,8 +2,10 @@ package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
+import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionService;
 
 public class SubscriptionListFragment extends ListFragment {
 	private static final String TAG = "SubscriptionListFragment";
@@ -33,8 +36,12 @@ public class SubscriptionListFragment extends ListFragment {
 		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
 		subscriptionCursor = podcastCatcherManager.querySubscription();
-		SubscriptionCursorAdapter subscriptionCursorAdapter = new SubscriptionCursorAdapter(getActivity(), subscriptionCursor);
+		FragmentActivity activity = getActivity();
+		SubscriptionCursorAdapter subscriptionCursorAdapter = new SubscriptionCursorAdapter(activity, subscriptionCursor);
 		setListAdapter(subscriptionCursorAdapter);
+
+		Intent intent = new Intent(activity, UpdatePodcastSubscriptionService.class);
+		activity.startService(intent);
 	}
 
 	@Override
