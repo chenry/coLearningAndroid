@@ -13,9 +13,15 @@ public class Subscription {
 	private String link;
 	private String imageUrl;
 
-	public Subscription(String title, String subTitle) {
+	public Subscription() {
 		this.id = UUID.randomUUID();
+	}
+
+	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public void setSubTitle(String subTitle) {
 		this.subTitle = subTitle;
 	}
 
