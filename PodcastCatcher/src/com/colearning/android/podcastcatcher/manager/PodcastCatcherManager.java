@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
@@ -61,6 +62,10 @@ public class PodcastCatcherManager {
 		}
 		cursor.close();
 		return subscription;
+	}
+
+	public SubscriptionItemCursor querySubscriptionItems(long subscriptionId) {
+		return podcastDBHelper.findSubscriptionItemsBySubscriptionId(subscriptionId);
 	}
 
 }

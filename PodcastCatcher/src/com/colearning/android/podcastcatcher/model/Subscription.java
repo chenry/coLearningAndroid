@@ -1,6 +1,7 @@
 package com.colearning.android.podcastcatcher.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Subscription {
@@ -13,6 +14,7 @@ public class Subscription {
 	private String category;
 	private String feedUrl;
 	private String imageUrl;
+	private Date lastSyncDate;
 
 	private List<SubscriptionItem> subscriptionItems;
 
@@ -97,6 +99,14 @@ public class Subscription {
 			this.subscriptionItems = new ArrayList<SubscriptionItem>();
 		}
 		this.subscriptionItems.add(subscriptionItem);
+	}
+
+	public Date getLastSyncDate() {
+		return lastSyncDate;
+	}
+
+	public void setLastSyncDate(Date lastSyncDate) {
+		this.lastSyncDate = lastSyncDate;
 	}
 
 }

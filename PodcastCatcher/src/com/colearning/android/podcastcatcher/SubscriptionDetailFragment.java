@@ -1,12 +1,17 @@
 package com.colearning.android.podcastcatcher;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
 
@@ -14,6 +19,7 @@ public class SubscriptionDetailFragment extends Fragment {
 	public static final String SUBSCRIPTION_ID = "com.colearning.android.podcastcatcher.subscription_id";
 	private Subscription subscription;
 	private PodcastCatcherManager podcastCatcherManager;
+	private SubscriptionItemCursor subscriptionItemsCursor;
 
 	public static SubscriptionDetailFragment create(Long subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
@@ -33,6 +39,7 @@ public class SubscriptionDetailFragment extends Fragment {
 
 		Long subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
 		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
+		subscriptionItemsCursor = podcastCatcherManager.querySubscriptionItems(subscriptionId);
 	}
 
 	@Override
@@ -46,6 +53,30 @@ public class SubscriptionDetailFragment extends Fragment {
 		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getFeedUrl());
 		((TextView) view.findViewById(R.id.txtSummaryValue)).setText(subscription.getSummary());
 
+		ListView lvSubscriptionItems = (ListView) view.findViewById(R.id.listViewSubscriptionItems);
+
+		lvSubscriptionItems.setAdapter(new SubscriptionItemsAdapter(getActivity(), subscriptionItemsCursor));
+
 		return view;
+	}
+
+	private static class SubscriptionItemsAdapter extends CursorAdapter {
+
+		private SubscriptionItemCursor subscriptionItemCursor;
+
+		public SubscriptionItemsAdapter(Context context, SubscriptionItemCursor cursor) {
+			super(context, cursor, 0);
+			this.subscriptionItemCursor = cursor;
+		}
+
+		@Override
+		public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+		}
+
+		@Override
+		public void bindView(View view, Context context, Cursor cursor) {
+		}
+
 	}
 }
