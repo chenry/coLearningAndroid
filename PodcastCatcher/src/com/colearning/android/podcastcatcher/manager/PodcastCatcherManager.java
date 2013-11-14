@@ -8,16 +8,13 @@ import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
-import com.colearning.android.podcastcatcher.model.SubscriptionList;
 
 public class PodcastCatcherManager {
 
-	private SubscriptionList subscriptionList;
 	private PodcastCatcherDatabaseHelper podcastDBHelper;
 	private static PodcastCatcherManager podcastCatcherManager;
 
 	private PodcastCatcherManager(Context context) {
-		subscriptionList = SubscriptionList.create();
 		podcastDBHelper = new PodcastCatcherDatabaseHelper(context);
 		podcastDBHelper.deleteAll();
 		podcastDBHelper.insertTestSubscriptions();
@@ -28,10 +25,6 @@ public class PodcastCatcherManager {
 			podcastCatcherManager = new PodcastCatcherManager(context.getApplicationContext());
 		}
 		return podcastCatcherManager;
-	}
-
-	public List<Subscription> getSubscriptions() {
-		return subscriptionList.getSubscriptions();
 	}
 
 	public void insertSubscription(Subscription subscription) {
