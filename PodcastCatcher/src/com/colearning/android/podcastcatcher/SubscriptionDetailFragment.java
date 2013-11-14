@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
-import com.colearning.android.podcastcatcher.model.SubscriptionList;
 
 public class SubscriptionDetailFragment extends Fragment {
 	public static final String SUBSCRIPTION_ID = "com.colearning.android.podcastcatcher.subscription_id";
 	private Subscription subscription;
+	private PodcastCatcherManager podcastCatcherManager;
 
 	public static SubscriptionDetailFragment create(UUID subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
@@ -30,8 +31,10 @@ public class SubscriptionDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		podcastCatcherManager = PodcastCatcherManager.create();
+
 		UUID subscriptionId = (UUID) getArguments().getSerializable(SUBSCRIPTION_ID);
-		subscription = SubscriptionList.create().findSubscription(subscriptionId);
+		subscription = podcastCatcherManager.findSubscription(subscriptionId);
 	}
 
 	@Override

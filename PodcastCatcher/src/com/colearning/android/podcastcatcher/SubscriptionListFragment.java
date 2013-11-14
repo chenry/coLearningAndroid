@@ -11,13 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
-import com.colearning.android.podcastcatcher.model.SubscriptionList;
 
 public class SubscriptionListFragment extends ListFragment {
 	private static final String TAG = "SubscriptionListFragment";
 	private List<Subscription> subscriptions;
 	private SubscriptionItemSelectedListener itemSelectedListener;
+	private PodcastCatcherManager podcastCatcherManager;
 
 	public interface SubscriptionItemSelectedListener {
 		public void itemSelected(Subscription subscription);
@@ -27,7 +28,9 @@ public class SubscriptionListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		subscriptions = SubscriptionList.create().getSubscriptions();
+		podcastCatcherManager = PodcastCatcherManager.create();
+
+		subscriptions = podcastCatcherManager.getSubscriptions();
 		setListAdapter(new SubscriptionListAdapter(subscriptions));
 
 		/*
