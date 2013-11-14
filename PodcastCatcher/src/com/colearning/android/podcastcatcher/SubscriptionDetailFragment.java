@@ -31,7 +31,7 @@ public class SubscriptionDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		podcastCatcherManager = PodcastCatcherManager.create();
+		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
 		UUID subscriptionId = (UUID) getArguments().getSerializable(SUBSCRIPTION_ID);
 		subscription = podcastCatcherManager.findSubscription(subscriptionId);
@@ -45,7 +45,7 @@ public class SubscriptionDetailFragment extends Fragment {
 		((TextView) view.findViewById(R.id.txtSubTitleValue)).setText(subscription.getSubTitle());
 		((TextView) view.findViewById(R.id.txtAuthorValue)).setText(subscription.getAuthor());
 		((TextView) view.findViewById(R.id.txtCategoryValue)).setText(subscription.getCategory());
-		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getLink());
+		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getFeedUrl());
 		((TextView) view.findViewById(R.id.txtSummaryValue)).setText(subscription.getSummary());
 
 		return view;

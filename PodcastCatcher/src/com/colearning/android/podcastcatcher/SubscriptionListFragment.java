@@ -28,7 +28,7 @@ public class SubscriptionListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		podcastCatcherManager = PodcastCatcherManager.create();
+		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
 		subscriptions = podcastCatcherManager.getSubscriptions();
 		setListAdapter(new SubscriptionListAdapter(subscriptions));

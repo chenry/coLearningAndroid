@@ -18,7 +18,7 @@ public class SubscriptionList {
 			subscription.setAuthor("Peter Pan " + i);
 			subscription.setCategory("Tech");
 			subscription.setImageUrl("https://www.google.com/images/srpr/logo11w.png");
-			subscription.setLink("http://agiletoolkit.libsyn.com");
+			subscription.setFeedUrl("http://agiletoolkit.libsyn.com");
 			//@formatter:off
 			subscription
 					.setSummary(i

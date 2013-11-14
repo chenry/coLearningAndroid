@@ -1,0 +1,16 @@
+Subsription
+===========
+_id integer primary key
+feed_url varchar(200)
+
+Subsription_Item
+================
+_id integer primary key
+subscription_id integer
+title varchar(200)
+guid_id varchar(200)
+link_url varchar(200)
+thumbnail_url varchar(200)
+item_desc varchar(400)
+media_url varchar(200)
+file_location varchar2(200)
