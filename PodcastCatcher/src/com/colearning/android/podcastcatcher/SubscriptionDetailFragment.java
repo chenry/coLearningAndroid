@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
+import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
 public class SubscriptionDetailFragment extends Fragment {
 	public static final String SUBSCRIPTION_ID = "com.colearning.android.podcastcatcher.subscription_id";
@@ -71,12 +72,16 @@ public class SubscriptionDetailFragment extends Fragment {
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			return inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
 		}
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
-		}
+			SubscriptionItem subscriptionItem = subscriptionItemCursor.getSubscriptionItem();
 
+			((TextView) view.findViewById(android.R.id.text1)).setText(subscriptionItem.getTitle());
+			((TextView) view.findViewById(android.R.id.text2)).setText(subscriptionItem.getItemDesc());
+		}
 	}
 }
