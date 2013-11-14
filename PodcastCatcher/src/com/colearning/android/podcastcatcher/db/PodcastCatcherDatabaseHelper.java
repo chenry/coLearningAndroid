@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -13,26 +15,27 @@ import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String DB_NAME = "podcastCatcher.sqlite";
-	private static final int VERSION = 0;
+	private static final int VERSION = 1;
 
-	private static final String TABLE_SUBSCRIPTION = "subscription";
-	private static final String COLUMN_SUBSCRIPTION_FEED_URL = "feed_url";
-	private static final String COLUMN_SUBSCRIPTION_TITLE = "title";
-	private static final String COLUMN_SUBSCRIPTION_SUBTITLE = "subtitle";
-	private static final String COLUMN_SUBSCRIPTION_AUTHOR = "author";
-	private static final String COLUMN_SUBSCRIPTION_SUMMARY = "summary";
-	private static final String COLUMN_SUBSCRIPTION_CATEGORY = "category";
-	private static final String COLUMN_SUBSCRIPTION_IMAGE_URL = "image_url";
+	public static final String TABLE_SUBSCRIPTION = "subscription";
+	public static final String COLUMN_SUBSCRIPTION_ID = "_id";
+	public static final String COLUMN_SUBSCRIPTION_FEED_URL = "feed_url";
+	public static final String COLUMN_SUBSCRIPTION_TITLE = "title";
+	public static final String COLUMN_SUBSCRIPTION_SUBTITLE = "subtitle";
+	public static final String COLUMN_SUBSCRIPTION_AUTHOR = "author";
+	public static final String COLUMN_SUBSCRIPTION_SUMMARY = "summary";
+	public static final String COLUMN_SUBSCRIPTION_CATEGORY = "category";
+	public static final String COLUMN_SUBSCRIPTION_IMAGE_URL = "image_url";
 
-	private static final String TABLE_SUBSCRIPTION_ITEM = "subscription_item";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID = "subscription_id";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_TITLE = "title";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_GUID_ID = "guid_id";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_LINK_URL = "link_url";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL = "thumbnail_url";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC = "item_desc";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL = "media_url";
-	private static final String COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION = "file_location";
+	public static final String TABLE_SUBSCRIPTION_ITEM = "subscription_item";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID = "subscription_id";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_TITLE = "title";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_GUID_ID = "guid_id";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_LINK_URL = "link_url";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL = "thumbnail_url";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC = "item_desc";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL = "media_url";
+	public static final String COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION = "file_location";
 
 	public PodcastCatcherDatabaseHelper(Context context) {
 		super(context, DB_NAME, null, VERSION);
@@ -113,12 +116,60 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void insertTestSubscriptions() {
+		insertSubscription(createSubscription(0));
+		insertSubscription(createSubscription(1));
+		insertSubscription(createSubscription(2));
+		insertSubscription(createSubscription(3));
+		insertSubscription(createSubscription(4));
+	}
+
+	private Subscription createSubscription(int i) {
 		Subscription subscription = new Subscription();
-		subscription.setTitle("This is a title");
-		subscription.setSubTitle("This is a subtitle");
+		subscription.setTitle("Title #" + i);
+		subscription.setSubTitle("A subtitle " + i);
 		subscription.setAuthor("Carlus Henry");
 		subscription.setCategory("Tech");
 		subscription.setSummary("This is just something silly");
-		insertSubscription(subscription);
+		return subscription;
+	}
+
+	public SubscriptionCursor querySubscription() {
+		Cursor cursor = getReadableDatabase().query(TABLE_SUBSCRIPTION, null, null, null, null, null, null);
+		return new SubscriptionCursor(cursor);
+	}
+
+	public static class SubscriptionCursor extends CursorWrapper {
+		public SubscriptionCursor(Cursor cursor) {
+			super(cursor);
+		}
+
+		public Subscription getSubscription() {
+
+			if (isBeforeFirst() || isAfterLast()) {
+				return null;
+			}
+
+			Subscription subscription = new Subscription();
+			long subscriptioinId = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_ID));
+			String author = getString(getColumnIndex(COLUMN_SUBSCRIPTION_AUTHOR));
+			String category = getString(getColumnIndex(COLUMN_SUBSCRIPTION_CATEGORY));
+			String feedUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_FEED_URL));
+			String imageUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_IMAGE_URL));
+			String subTitle = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUBTITLE));
+			String summary = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUMMARY));
+			String title = getString(getColumnIndex(COLUMN_SUBSCRIPTION_TITLE));
+
+			subscription.setId(subscriptioinId);
+			subscription.setAuthor(author);
+			subscription.setCategory(category);
+			subscription.setFeedUrl(feedUrl);
+			subscription.setImageUrl(imageUrl);
+			subscription.setSubTitle(subTitle);
+			subscription.setSummary(summary);
+			subscription.setTitle(title);
+
+			return subscription;
+
+		}
 	}
 }
