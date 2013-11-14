@@ -138,6 +138,21 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		return new SubscriptionCursor(cursor);
 	}
 
+	public SubscriptionCursor findSubscriptionById(long id) {
+		//@formatter:off
+		Cursor cursor = getReadableDatabase().query(
+				TABLE_SUBSCRIPTION, 
+				null, 
+				COLUMN_SUBSCRIPTION_ID + " = ?", 
+				new String[] { String.valueOf(id) }, 
+				null, 
+				null, 
+				null, 
+				"1");
+		//@formatter:on
+		return new SubscriptionCursor(cursor);
+	}
+
 	public static class SubscriptionCursor extends CursorWrapper {
 		public SubscriptionCursor(Cursor cursor) {
 			super(cursor);

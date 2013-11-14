@@ -1,7 +1,5 @@
 package com.colearning.android.podcastcatcher;
 
-import java.util.UUID;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,11 +15,11 @@ public class SubscriptionDetailFragment extends Fragment {
 	private Subscription subscription;
 	private PodcastCatcherManager podcastCatcherManager;
 
-	public static SubscriptionDetailFragment create(UUID subscriptionId) {
+	public static SubscriptionDetailFragment create(Long subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
 
 		Bundle args = new Bundle();
-		args.putSerializable(SUBSCRIPTION_ID, subscriptionId);
+		args.putLong(SUBSCRIPTION_ID, subscriptionId);
 		fragment.setArguments(args);
 
 		return fragment;
@@ -33,8 +31,8 @@ public class SubscriptionDetailFragment extends Fragment {
 
 		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
-		UUID subscriptionId = (UUID) getArguments().getSerializable(SUBSCRIPTION_ID);
-		subscription = podcastCatcherManager.findSubscription(subscriptionId);
+		Long subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
+		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
 	}
 
 	@Override

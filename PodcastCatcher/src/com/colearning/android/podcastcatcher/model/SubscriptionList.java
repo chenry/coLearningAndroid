@@ -2,7 +2,6 @@ package com.colearning.android.podcastcatcher.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class SubscriptionList {
 
@@ -47,14 +46,4 @@ public class SubscriptionList {
 		return subscriptions;
 	}
 
-	public Subscription findSubscription(UUID subscriptionId) {
-		Subscription matchingSubscription = null;
-		for (Subscription currSubscription : subscriptions) {
-			if (subscriptionId.equals(currSubscription.getId())) {
-				matchingSubscription = currSubscription;
-				break;
-			}
-		}
-		return matchingSubscription;
-	}
 }

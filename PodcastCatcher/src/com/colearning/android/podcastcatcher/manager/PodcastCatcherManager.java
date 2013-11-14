@@ -1,7 +1,6 @@
 package com.colearning.android.podcastcatcher.manager;
 
 import java.util.List;
-import java.util.UUID;
 
 import android.content.Context;
 
@@ -15,6 +14,7 @@ public class PodcastCatcherManager {
 
 	private SubscriptionList subscriptionList;
 	private PodcastCatcherDatabaseHelper podcastDBHelper;
+	private static PodcastCatcherManager podcastCatcherManager;
 
 	private PodcastCatcherManager(Context context) {
 		subscriptionList = SubscriptionList.create();
@@ -24,15 +24,14 @@ public class PodcastCatcherManager {
 	}
 
 	public static PodcastCatcherManager create(Context context) {
-		return new PodcastCatcherManager(context.getApplicationContext());
+		if (podcastCatcherManager == null) {
+			podcastCatcherManager = new PodcastCatcherManager(context.getApplicationContext());
+		}
+		return podcastCatcherManager;
 	}
 
 	public List<Subscription> getSubscriptions() {
 		return subscriptionList.getSubscriptions();
-	}
-
-	public Subscription findSubscription(UUID subscriptionId) {
-		return subscriptionList.findSubscription(subscriptionId);
 	}
 
 	public void insertSubscription(Subscription subscription) {
@@ -58,6 +57,17 @@ public class PodcastCatcherManager {
 
 	public SubscriptionCursor querySubscription() {
 		return podcastDBHelper.querySubscription();
+	}
+
+	public Subscription findSubscriptionById(long subscriptionId) {
+		SubscriptionCursor cursor = podcastDBHelper.findSubscriptionById(subscriptionId);
+		cursor.moveToFirst();
+		Subscription subscription = null;
+		if (!cursor.isAfterLast()) {
+			subscription = cursor.getSubscription();
+		}
+		cursor.close();
+		return subscription;
 	}
 
 }
