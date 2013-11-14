@@ -84,26 +84,41 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		contentValues.put(COLUMN_SUBSCRIPTION_SUBTITLE, subscription.getSubTitle());
 		contentValues.put(COLUMN_SUBSCRIPTION_SUMMARY, subscription.getSummary());
 		contentValues.put(COLUMN_SUBSCRIPTION_TITLE, subscription.getTitle());
-		long subscriptionId = getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, contentValues);
-
-		insertSubscriptionItems(subscription.getSubscriptionItems());
-
-		return subscriptionId;
+		return getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, contentValues);
 	}
 
-	private void insertSubscriptionItems(List<SubscriptionItem> subscriptionItems) {
+	public void insertSubscriptionItems(long subscriptionId, List<SubscriptionItem> subscriptionItems) {
 		for (SubscriptionItem currSubscriptionItem : subscriptionItems) {
-			ContentValues contentValues = new ContentValues();
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION, currSubscriptionItem.getFileLocation());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_GUID_ID, currSubscriptionItem.getGuidId());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC, currSubscriptionItem.getItemDesc());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_LINK_URL, currSubscriptionItem.getLinkUrl());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL, currSubscriptionItem.getMediaUrl());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID, currSubscriptionItem.getSubscriptionId());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
-			contentValues.put(COLUMN_SUBSCRIPTION_ITEM_TITLE, currSubscriptionItem.getTitle());
-
-			getWritableDatabase().insert(TABLE_SUBSCRIPTION_ITEM, null, contentValues);
+			insertSubscriptionItem(subscriptionId, currSubscriptionItem);
 		}
+	}
+
+	public void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION, currSubscriptionItem.getFileLocation());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_GUID_ID, currSubscriptionItem.getGuidId());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC, currSubscriptionItem.getItemDesc());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_LINK_URL, currSubscriptionItem.getLinkUrl());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL, currSubscriptionItem.getMediaUrl());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID, subscriptionId);
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
+		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_TITLE, currSubscriptionItem.getTitle());
+
+		getWritableDatabase().insert(TABLE_SUBSCRIPTION_ITEM, null, contentValues);
+	}
+
+	public void deleteAll() {
+		getWritableDatabase().delete(TABLE_SUBSCRIPTION, null, null);
+		getWritableDatabase().delete(TABLE_SUBSCRIPTION_ITEM, null, null);
+	}
+
+	public void insertTestSubscriptions() {
+		Subscription subscription = new Subscription();
+		subscription.setTitle("This is a title");
+		subscription.setSubTitle("This is a subtitle");
+		subscription.setAuthor("Carlus Henry");
+		subscription.setCategory("Tech");
+		subscription.setSummary("This is just something silly");
+		insertSubscription(subscription);
 	}
 }
