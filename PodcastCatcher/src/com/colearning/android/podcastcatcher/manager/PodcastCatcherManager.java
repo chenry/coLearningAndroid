@@ -1,5 +1,6 @@
 package com.colearning.android.podcastcatcher.manager;
 
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -90,8 +91,19 @@ public class PodcastCatcherManager {
 		}
 	}
 
-	private void updateSubscriptionIfNecessary(Subscription persistedSubscription, Subscription feedSubscription) {
-		Log.i(TAG, "feedSubscription: " + feedSubscription);
+	private void updateSubscriptionIfNecessary(Subscription ps, Subscription fs) {
+		Log.i(TAG, "feedSubscription: " + fs);
+
+		ps.setAuthor((fs.getAuthor() == null) ? null : fs.getAuthor());
+		ps.setCategory(fs.getCategory() == null ? null : fs.getCategory());
+		ps.setImageUrl(fs.getImageUrl() == null ? null : fs.getImageUrl());
+		ps.setLastPubDate(fs.getLastPubDate() == null ? null : fs.getLastPubDate());
+		ps.setLastSyncDate(new Date());
+		ps.setSubTitle(fs.getSubTitle() == null ? null : fs.getSubTitle());
+		ps.setSummary(fs.getSummary() == null ? null : fs.getSummary());
+		ps.setTitle(fs.getTitle() == null ? null : fs.getTitle());
+
+		podcastDBHelper.updateSubscription(ps);
 
 	}
 }

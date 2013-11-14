@@ -85,19 +85,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public long insertSubscription(Subscription subscription) {
-		ContentValues contentValues = new ContentValues();
-		contentValues.put(COLUMN_SUBSCRIPTION_AUTHOR, subscription.getAuthor());
-		contentValues.put(COLUMN_SUBSCRIPTION_CATEGORY, subscription.getCategory());
-		contentValues.put(COLUMN_SUBSCRIPTION_FEED_URL, subscription.getFeedUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_IMAGE_URL, subscription.getImageUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_SUBTITLE, subscription.getSubTitle());
-		contentValues.put(COLUMN_SUBSCRIPTION_SUMMARY, subscription.getSummary());
-		contentValues.put(COLUMN_SUBSCRIPTION_TITLE, subscription.getTitle());
-		Long lastSyncTime = (subscription.getLastSyncDate() == null) ? null : subscription.getLastSyncDate().getTime();
-		Long lastPubDate = (subscription.getLastPubDate() == null) ? null : subscription.getLastPubDate().getTime();
-		contentValues.put(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME, lastSyncTime);
-		contentValues.put(COLUMN_SUBSCRIPTION_LAST_PUB_DATE, lastPubDate);
-		return getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, contentValues);
+		return getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, toContentValues(subscription));
 	}
 
 	public void insertSubscriptionItems(long subscriptionId, List<SubscriptionItem> subscriptionItems) {
@@ -282,4 +270,25 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 
 		}
 	}
+
+	public void updateSubscription(Subscription ps) {
+		getWritableDatabase().update(TABLE_SUBSCRIPTION, toContentValues(ps), "_id = ?", new String[] { String.valueOf(ps.getId()) });
+	}
+
+	private ContentValues toContentValues(Subscription subscription) {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(COLUMN_SUBSCRIPTION_AUTHOR, subscription.getAuthor());
+		contentValues.put(COLUMN_SUBSCRIPTION_CATEGORY, subscription.getCategory());
+		contentValues.put(COLUMN_SUBSCRIPTION_FEED_URL, subscription.getFeedUrl());
+		contentValues.put(COLUMN_SUBSCRIPTION_IMAGE_URL, subscription.getImageUrl());
+		contentValues.put(COLUMN_SUBSCRIPTION_SUBTITLE, subscription.getSubTitle());
+		contentValues.put(COLUMN_SUBSCRIPTION_SUMMARY, subscription.getSummary());
+		contentValues.put(COLUMN_SUBSCRIPTION_TITLE, subscription.getTitle());
+		Long lastSyncTime = (subscription.getLastSyncDate() == null) ? null : subscription.getLastSyncDate().getTime();
+		Long lastPubDate = (subscription.getLastPubDate() == null) ? null : subscription.getLastPubDate().getTime();
+		contentValues.put(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME, lastSyncTime);
+		contentValues.put(COLUMN_SUBSCRIPTION_LAST_PUB_DATE, lastPubDate);
+		return contentValues;
+	}
+
 }
