@@ -1,14 +1,12 @@
 package com.colearning.android.podcastcatcher;
 
-import java.util.UUID;
-
 import android.support.v4.app.Fragment;
 
 public class SubscriptionDetailActivity extends OneFragmentFragmentActivity {
 
 	@Override
 	public Fragment createFragment() {
-		UUID subscriptionId = (UUID) getIntent().getSerializableExtra(SubscriptionDetailFragment.SUBSCRIPTION_ID);
+		Long subscriptionId = (Long) getIntent().getLongExtra(SubscriptionDetailFragment.SUBSCRIPTION_ID, -1L);
 		return SubscriptionDetailFragment.create(subscriptionId);
 	}
 

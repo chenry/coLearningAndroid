@@ -1,7 +1,5 @@
 package com.colearning.android.podcastcatcher;
 
-import java.util.UUID;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,18 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
-import com.colearning.android.podcastcatcher.model.SubscriptionList;
 
 public class SubscriptionDetailFragment extends Fragment {
 	public static final String SUBSCRIPTION_ID = "com.colearning.android.podcastcatcher.subscription_id";
 	private Subscription subscription;
+	private PodcastCatcherManager podcastCatcherManager;
 
-	public static SubscriptionDetailFragment create(UUID subscriptionId) {
+	public static SubscriptionDetailFragment create(Long subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
 
 		Bundle args = new Bundle();
-		args.putSerializable(SUBSCRIPTION_ID, subscriptionId);
+		args.putLong(SUBSCRIPTION_ID, subscriptionId);
 		fragment.setArguments(args);
 
 		return fragment;
@@ -30,8 +29,10 @@ public class SubscriptionDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		UUID subscriptionId = (UUID) getArguments().getSerializable(SUBSCRIPTION_ID);
-		subscription = SubscriptionList.create().findSubscription(subscriptionId);
+		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
+
+		Long subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
+		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class SubscriptionDetailFragment extends Fragment {
 		((TextView) view.findViewById(R.id.txtSubTitleValue)).setText(subscription.getSubTitle());
 		((TextView) view.findViewById(R.id.txtAuthorValue)).setText(subscription.getAuthor());
 		((TextView) view.findViewById(R.id.txtCategoryValue)).setText(subscription.getCategory());
-		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getLink());
+		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getFeedUrl());
 		((TextView) view.findViewById(R.id.txtSummaryValue)).setText(subscription.getSummary());
 
 		return view;

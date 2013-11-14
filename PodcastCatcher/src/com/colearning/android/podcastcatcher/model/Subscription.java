@@ -1,20 +1,23 @@
 package com.colearning.android.podcastcatcher.model;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Subscription {
 
-	private UUID id;
+	private long id;
 	private String title;
 	private String subTitle;
 	private String author;
 	private String summary;
 	private String category;
-	private String link;
+	private String feedUrl;
 	private String imageUrl;
 
+	private List<SubscriptionItem> subscriptionItems;
+
 	public Subscription() {
-		this.id = UUID.randomUUID();
+		this.id = -1L;
 	}
 
 	public void setTitle(String title) {
@@ -25,7 +28,11 @@ public class Subscription {
 		this.subTitle = subTitle;
 	}
 
-	public UUID getId() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getId() {
 		return id;
 	}
 
@@ -61,12 +68,12 @@ public class Subscription {
 		this.category = category;
 	}
 
-	public String getLink() {
-		return link;
+	public String getFeedUrl() {
+		return feedUrl;
 	}
 
-	public void setLink(String link) {
-		this.link = link;
+	public void setFeedUrl(String link) {
+		this.feedUrl = link;
 	}
 
 	public String getImageUrl() {
@@ -75,6 +82,21 @@ public class Subscription {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public List<SubscriptionItem> getSubscriptionItems() {
+		return subscriptionItems;
+	}
+
+	public void setSubscriptionItems(List<SubscriptionItem> subscriptionItems) {
+		this.subscriptionItems = subscriptionItems;
+	}
+
+	public void addSubscriptionItem(SubscriptionItem subscriptionItem) {
+		if (this.subscriptionItems == null) {
+			this.subscriptionItems = new ArrayList<SubscriptionItem>();
+		}
+		this.subscriptionItems.add(subscriptionItem);
 	}
 
 }
