@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
-import com.colearning.android.podcastcatcher.model.Subscription;
-
 public class SubscriptionListActivity extends OneFragmentFragmentActivity implements SubscriptionListFragment.SubscriptionItemSelectedListener {
 
 	private static final String TAG = "SubscriptionListActivity";
@@ -23,12 +20,9 @@ public class SubscriptionListActivity extends OneFragmentFragmentActivity implem
 	}
 
 	@Override
-	public void itemSelected(long subscriptionId) {
-		Subscription subscription = PodcastCatcherManager.create(this).findSubscriptionById(subscriptionId);
-		Log.i(TAG, "SubscriptionTitle: " + subscription.getTitle());
+	public void subscriptionSelected(long subscriptionId) {
 		Intent intent = new Intent(this, SubscriptionDetailActivity.class);
 		intent.putExtra(SubscriptionDetailFragment.SUBSCRIPTION_ID, subscriptionId);
-
 		startActivity(intent);
 	}
 }

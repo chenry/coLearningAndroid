@@ -20,10 +20,10 @@ public class SubscriptionListFragment extends ListFragment {
 	private static final String TAG = "SubscriptionListFragment";
 	private SubscriptionItemSelectedListener itemSelectedListener;
 	private PodcastCatcherManager podcastCatcherManager;
-	private SubscriptionCursor cursor;
+	private SubscriptionCursor subscriptionCursor;
 
 	public interface SubscriptionItemSelectedListener {
-		public void itemSelected(long subscriptionId);
+		public void subscriptionSelected(long subscriptionId);
 	}
 
 	@Override
@@ -32,14 +32,14 @@ public class SubscriptionListFragment extends ListFragment {
 
 		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
-		cursor = podcastCatcherManager.querySubscription();
-		SubscriptionCursorAdapter subscriptionCursorAdapter = new SubscriptionCursorAdapter(getActivity(), cursor);
+		subscriptionCursor = podcastCatcherManager.querySubscription();
+		SubscriptionCursorAdapter subscriptionCursorAdapter = new SubscriptionCursorAdapter(getActivity(), subscriptionCursor);
 		setListAdapter(subscriptionCursorAdapter);
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		itemSelectedListener.itemSelected(id);
+		itemSelectedListener.subscriptionSelected(id);
 	}
 
 	private static class SubscriptionCursorAdapter extends CursorAdapter {
@@ -69,7 +69,7 @@ public class SubscriptionListFragment extends ListFragment {
 
 	@Override
 	public void onDestroy() {
-		cursor.close();
+		subscriptionCursor.close();
 		super.onDestroy();
 	}
 
