@@ -209,23 +209,6 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 			}
 
 			SubscriptionItem si = new SubscriptionItem();
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_ID = "_id";
-			// public static final String
-			// COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID = "subscription_id";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_TITLE =
-			// "title";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_GUID_ID =
-			// "guid_id";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_LINK_URL =
-			// "link_url";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL
-			// = "thumbnail_url";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC =
-			// "item_desc";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL =
-			// "media_url";
-			// public static final String COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION
-			// = "file_location";
 
 			long id = getLong(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns._ID));
 			String fileLocation = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.FILE_LOCATION));
