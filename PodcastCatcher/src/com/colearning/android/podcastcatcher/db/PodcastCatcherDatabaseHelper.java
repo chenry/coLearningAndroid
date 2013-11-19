@@ -10,6 +10,7 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
@@ -19,27 +20,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	private static final int VERSION = 1;
 
 	public static final String TABLE_SUBSCRIPTION = "subscription";
-	public static final String COLUMN_SUBSCRIPTION_ID = "_id";
-	public static final String COLUMN_SUBSCRIPTION_FEED_URL = "feed_url";
-	public static final String COLUMN_SUBSCRIPTION_TITLE = "title";
-	public static final String COLUMN_SUBSCRIPTION_SUBTITLE = "subtitle";
-	public static final String COLUMN_SUBSCRIPTION_AUTHOR = "author";
-	public static final String COLUMN_SUBSCRIPTION_SUMMARY = "summary";
-	public static final String COLUMN_SUBSCRIPTION_CATEGORY = "category";
-	public static final String COLUMN_SUBSCRIPTION_IMAGE_URL = "image_url";
-	public static final String COLUMN_SUBSCRIPTION_LAST_SYNC_TIME = "last_sync_time";
-	public static final String COLUMN_SUBSCRIPTION_LAST_PUB_DATE = "last_pub_date";
-
 	public static final String TABLE_SUBSCRIPTION_ITEM = "subscription_item";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_ID = "_id";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID = "subscription_id";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_TITLE = "title";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_GUID_ID = "guid_id";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_LINK_URL = "link_url";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL = "thumbnail_url";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC = "item_desc";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL = "media_url";
-	public static final String COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION = "file_location";
 
 	public PodcastCatcherDatabaseHelper(Context context) {
 		super(context, DB_NAME, null, VERSION);
@@ -96,14 +77,14 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 
 	public void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION, currSubscriptionItem.getFileLocation());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_GUID_ID, currSubscriptionItem.getGuidId());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC, currSubscriptionItem.getItemDesc());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_LINK_URL, currSubscriptionItem.getLinkUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL, currSubscriptionItem.getMediaUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID, subscriptionId);
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_ITEM_TITLE, currSubscriptionItem.getTitle());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.FILE_LOCATION, currSubscriptionItem.getFileLocation());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID, currSubscriptionItem.getGuidId());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.ITEM_DESC, currSubscriptionItem.getItemDesc());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.LINK_URL, currSubscriptionItem.getLinkUrl());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.MEDIA_URL, currSubscriptionItem.getMediaUrl());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID, subscriptionId);
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
+		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.TITLE, currSubscriptionItem.getTitle());
 
 		getWritableDatabase().insert(TABLE_SUBSCRIPTION_ITEM, null, contentValues);
 	}
@@ -152,7 +133,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		Cursor cursor = getReadableDatabase().query(
 				TABLE_SUBSCRIPTION, 
 				null, 
-				COLUMN_SUBSCRIPTION_ID + " = ?", 
+				PodcastCatcherContract.Subscription.Columns._ID + " = ?", 
 				new String[] { String.valueOf(id) }, 
 				null, 
 				null, 
@@ -167,7 +148,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		Cursor cursor = getReadableDatabase().query(
 				TABLE_SUBSCRIPTION_ITEM, 
 				null, 
-				COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID + " = ?", 
+				PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID + " = ?", 
 				new String[] { String.valueOf(subscriptionId) }, 
 				null, 
 				null, 
@@ -189,16 +170,16 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 			}
 
 			Subscription subscription = new Subscription();
-			long subscriptioinId = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_ID));
-			String author = getString(getColumnIndex(COLUMN_SUBSCRIPTION_AUTHOR));
-			String category = getString(getColumnIndex(COLUMN_SUBSCRIPTION_CATEGORY));
-			String feedUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_FEED_URL));
-			String imageUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_IMAGE_URL));
-			String subTitle = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUBTITLE));
-			String summary = getString(getColumnIndex(COLUMN_SUBSCRIPTION_SUMMARY));
-			String title = getString(getColumnIndex(COLUMN_SUBSCRIPTION_TITLE));
-			long lastSyncTimeLong = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME));
-			long lastPubDateLong = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_LAST_PUB_DATE));
+			long subscriptioinId = getLong(getColumnIndex(PodcastCatcherContract.Subscription.Columns._ID));
+			String author = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.AUTHOR));
+			String category = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.CATEGORY));
+			String feedUrl = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.FEED_URL));
+			String imageUrl = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.IMAGE_URL));
+			String subTitle = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.SUBTITLE));
+			String summary = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.SUMMARY));
+			String title = getString(getColumnIndex(PodcastCatcherContract.Subscription.Columns.TITLE));
+			long lastSyncTimeLong = getLong(getColumnIndex(PodcastCatcherContract.Subscription.Columns.LAST_SYNC_TIME));
+			long lastPubDateLong = getLong(getColumnIndex(PodcastCatcherContract.Subscription.Columns.LAST_PUB_DATE));
 
 			subscription.setId(subscriptioinId);
 			subscription.setAuthor(author);
@@ -246,15 +227,15 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 			// public static final String COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION
 			// = "file_location";
 
-			long id = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_ID));
-			String fileLocation = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_FILE_LOCATION));
-			String guidId = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_GUID_ID));
-			long subscriptionId = getLong(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_SUBSCRIPTION_ID));
-			String itemDesc = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_ITEM_DESC));
-			String linkUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_LINK_URL));
-			String mediaUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_MEDIA_URL));
-			String thumbnailUrl = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_THUMBNAIL_URL));
-			String title = getString(getColumnIndex(COLUMN_SUBSCRIPTION_ITEM_TITLE));
+			long id = getLong(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns._ID));
+			String fileLocation = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.FILE_LOCATION));
+			String guidId = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID));
+			long subscriptionId = getLong(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID));
+			String itemDesc = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.ITEM_DESC));
+			String linkUrl = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.LINK_URL));
+			String mediaUrl = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.MEDIA_URL));
+			String thumbnailUrl = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.THUMBNAIL_URL));
+			String title = getString(getColumnIndex(PodcastCatcherContract.SubscriptionItem.Columns.TITLE));
 
 			si.setId(id);
 			si.setFileLocation(fileLocation);
@@ -277,17 +258,17 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 
 	private ContentValues toContentValues(Subscription subscription) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(COLUMN_SUBSCRIPTION_AUTHOR, subscription.getAuthor());
-		contentValues.put(COLUMN_SUBSCRIPTION_CATEGORY, subscription.getCategory());
-		contentValues.put(COLUMN_SUBSCRIPTION_FEED_URL, subscription.getFeedUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_IMAGE_URL, subscription.getImageUrl());
-		contentValues.put(COLUMN_SUBSCRIPTION_SUBTITLE, subscription.getSubTitle());
-		contentValues.put(COLUMN_SUBSCRIPTION_SUMMARY, subscription.getSummary());
-		contentValues.put(COLUMN_SUBSCRIPTION_TITLE, subscription.getTitle());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.AUTHOR, subscription.getAuthor());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.CATEGORY, subscription.getCategory());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.FEED_URL, subscription.getFeedUrl());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.IMAGE_URL, subscription.getImageUrl());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.SUBTITLE, subscription.getSubTitle());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.SUMMARY, subscription.getSummary());
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.TITLE, subscription.getTitle());
 		Long lastSyncTime = (subscription.getLastSyncDate() == null) ? null : subscription.getLastSyncDate().getTime();
 		Long lastPubDate = (subscription.getLastPubDate() == null) ? null : subscription.getLastPubDate().getTime();
-		contentValues.put(COLUMN_SUBSCRIPTION_LAST_SYNC_TIME, lastSyncTime);
-		contentValues.put(COLUMN_SUBSCRIPTION_LAST_PUB_DATE, lastPubDate);
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.LAST_SYNC_TIME, lastSyncTime);
+		contentValues.put(PodcastCatcherContract.Subscription.Columns.LAST_PUB_DATE, lastPubDate);
 		return contentValues;
 	}
 
