@@ -42,7 +42,7 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		int[] uiBindTo = { android.R.id.text1, android.R.id.text2 };
 
 		getLoaderManager().initLoader(SUBSCRIPTION_LIST_LOADER, null, this);
-		cursorAdapter = new SimpleCursorAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_2, null, uiBindFrom, uiBindTo,
+		cursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, null, uiBindFrom, uiBindTo,
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		setListAdapter(cursorAdapter);
 
@@ -111,7 +111,7 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 				PodcastCatcherContract.Subscription.Columns.SUBTITLE };
 		//@formatter:off
 		return new CursorLoader(
-				getActivity().getApplicationContext(), 
+				getActivity(), 
 				PodcastCatcherContract.Subscription.CONTENT_URI, 
 				projection, 
 				null, 
