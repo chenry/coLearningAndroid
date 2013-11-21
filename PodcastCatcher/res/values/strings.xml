@@ -10,5 +10,7 @@
     <string name="subscription_link_label">Link:</string>
     <string name="title_activity_subscription_detail">SubscriptionDetailActivity</string>
     <string name="subscription_summary_label">Summary:</string>
+    <string name="new_subscription">New Subscription</string>
+    <string name="delete_subscription">Delete Subscription</string>
     
 </resources>

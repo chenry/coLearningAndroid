@@ -1,6 +1,8 @@
 package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -9,10 +11,15 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
+import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
+import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionService;
 
 public class SubscriptionListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -20,6 +27,7 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 	private static final int SUBSCRIPTION_LIST_LOADER = 20;
 	private SubscriptionItemSelectedListener itemSelectedListener;
 	private SimpleCursorAdapter cursorAdapter;
+	private PodcastCatcherManager mPodcastCatcherManager;
 
 	public interface SubscriptionItemSelectedListener {
 		public void subscriptionSelected(long subscriptionId);
@@ -28,7 +36,8 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		setHasOptionsMenu(true);
+		mPodcastCatcherManager = PodcastCatcherManager.create(getActivity());
 		String[] uiBindFrom = { PodcastCatcherContract.Subscription.Columns.TITLE, PodcastCatcherContract.Subscription.Columns.SUBTITLE };
 		int[] uiBindTo = { android.R.id.text1, android.R.id.text2 };
 
@@ -43,6 +52,39 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		itemSelectedListener.subscriptionSelected(id);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_subscription_list, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_item_new_subscription:
+			handleNewSubscription();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void handleNewSubscription() {
+		ContentResolver contentResolver = getActivity().getContentResolver();
+		Subscription subscription = getNewSubscription();
+		contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, mPodcastCatcherManager.toContentValues(subscription));
+		Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
+		getActivity().startService(intent);
+	}
+
+	private Subscription getNewSubscription() {
+		Subscription subscription = new Subscription();
+
+		subscription.setFeedUrl("http://feeds.feedburner.com/javaposse");
+
+		return subscription;
 	}
 
 	@Override
