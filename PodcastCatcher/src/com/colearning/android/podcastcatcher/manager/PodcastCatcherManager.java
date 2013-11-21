@@ -26,9 +26,6 @@ public class PodcastCatcherManager {
 
 	private PodcastCatcherManager(Context context) {
 		podcastDatasource = new PodcastCatcherDatasource(context);
-		podcastDatasource.deleteAll();
-		podcastDatasource.insertTestSubscriptions();
-
 		feedParser = new FeedParser();
 	}
 
