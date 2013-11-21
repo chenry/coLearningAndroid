@@ -1,29 +1,24 @@
 package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
-import android.view.LayoutInflater;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
-import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
-import com.colearning.android.podcastcatcher.model.Subscription;
-import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionService;
+import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 
-public class SubscriptionListFragment extends ListFragment {
+public class SubscriptionListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "SubscriptionListFragment";
+	private static final int SUBSCRIPTION_LIST_LOADER = 20;
 	private SubscriptionItemSelectedListener itemSelectedListener;
-	private PodcastCatcherManager podcastCatcherManager;
-	private SubscriptionCursor subscriptionCursor;
+	private SimpleCursorAdapter cursorAdapter;
 
 	public interface SubscriptionItemSelectedListener {
 		public void subscriptionSelected(long subscriptionId);
@@ -33,15 +28,14 @@ public class SubscriptionListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
+		String[] uiBindFrom = { PodcastCatcherContract.Subscription.Columns.TITLE, PodcastCatcherContract.Subscription.Columns.SUBTITLE };
+		int[] uiBindTo = { android.R.id.text1, android.R.id.text2 };
 
-		subscriptionCursor = podcastCatcherManager.querySubscription();
-		FragmentActivity activity = getActivity();
-		SubscriptionCursorAdapter subscriptionCursorAdapter = new SubscriptionCursorAdapter(activity, subscriptionCursor);
-		setListAdapter(subscriptionCursorAdapter);
+		getLoaderManager().initLoader(SUBSCRIPTION_LIST_LOADER, null, this);
+		cursorAdapter = new SimpleCursorAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_2, null, uiBindFrom, uiBindTo,
+				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		setListAdapter(cursorAdapter);
 
-		Intent intent = new Intent(activity, UpdatePodcastSubscriptionService.class);
-		activity.startService(intent);
 	}
 
 	@Override
@@ -49,34 +43,9 @@ public class SubscriptionListFragment extends ListFragment {
 		itemSelectedListener.subscriptionSelected(id);
 	}
 
-	private static class SubscriptionCursorAdapter extends CursorAdapter {
-
-		private SubscriptionCursor subscriptionCursor;
-
-		public SubscriptionCursorAdapter(Context context, SubscriptionCursor cursor) {
-			super(context, cursor, 0);
-			this.subscriptionCursor = cursor;
-		}
-
-		@Override
-		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			return inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
-		}
-
-		@Override
-		public void bindView(View view, Context context, Cursor cursor) {
-			Subscription subscription = subscriptionCursor.getSubscription();
-
-			((TextView) view.findViewById(android.R.id.text1)).setText(subscription.getTitle());
-			((TextView) view.findViewById(android.R.id.text2)).setText(subscription.getSubTitle());
-		}
-
-	}
-
 	@Override
 	public void onDestroy() {
-		subscriptionCursor.close();
+		// subscriptionCursor.close();
 		super.onDestroy();
 	}
 
@@ -90,6 +59,31 @@ public class SubscriptionListFragment extends ListFragment {
 	public void onDetach() {
 		super.onDetach();
 		itemSelectedListener = null;
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		String[] projection = { PodcastCatcherContract.Subscription.Columns._ID, PodcastCatcherContract.Subscription.Columns.TITLE,
+				PodcastCatcherContract.Subscription.Columns.SUBTITLE };
+		//@formatter:off
+		return new CursorLoader(
+				getActivity().getApplicationContext(), 
+				PodcastCatcherContract.Subscription.CONTENT_URI, 
+				projection, 
+				null, 
+				null, 
+				null);
+		//@formatter:on
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		cursorAdapter.swapCursor(cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		cursorAdapter.swapCursor(null);
 	}
 
 }
