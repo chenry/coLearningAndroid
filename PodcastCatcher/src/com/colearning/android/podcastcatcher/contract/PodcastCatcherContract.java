@@ -4,13 +4,14 @@ import android.content.ContentResolver;
 import android.net.Uri;
 
 public final class PodcastCatcherContract {
-	public static final String AUTHORITY = "com.colearning.android.podcstcatcher";
+	public static final String AUTHORITY = "com.colearning.android.podcastcatcher";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
 	public static final class Subscription {
-		public static final Uri CONTENT_URI = Uri.withAppendedPath(PodcastCatcherContract.CONTENT_URI, "subscriptions");
-		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + ".subscriptions";
-		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + ".subscriptions";
+		public static final String BASE_PATH = "subscriptions";
+		public static final Uri CONTENT_URI = Uri.withAppendedPath(PodcastCatcherContract.CONTENT_URI, BASE_PATH);
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "." + BASE_PATH;
+		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + "." + BASE_PATH;
 
 		public static final String TABLE_NAME = "subscription";
 
@@ -32,9 +33,10 @@ public final class PodcastCatcherContract {
 	}
 
 	public static final class SubscriptionItem {
-		public static final Uri CONTENT_URI = Uri.withAppendedPath(PodcastCatcherContract.CONTENT_URI, "subscriptionItems");
-		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + ".subscriptionItems";
-		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + ".subscriptionItems";
+		public static final String BASE_PATH = "subscriptionItems";
+		public static final Uri CONTENT_URI = Uri.withAppendedPath(PodcastCatcherContract.CONTENT_URI, BASE_PATH);
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "." + BASE_PATH;
+		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + "." + BASE_PATH;
 		public static final String TABLE_NAME = "subscription_item";
 
 		public static final class Columns {

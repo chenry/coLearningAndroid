@@ -3,12 +3,13 @@ package com.colearning.android.podcastcatcher.manager;
 import java.util.Date;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
-import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper;
-import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionCursor;
-import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource.SubscriptionCursor;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.feed.FeedParser;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
@@ -19,13 +20,14 @@ public class PodcastCatcherManager {
 
 	private static PodcastCatcherManager podcastCatcherManager;
 
-	private PodcastCatcherDatabaseHelper podcastDBHelper;
 	private FeedParser feedParser;
 
+	private PodcastCatcherDatasource podcastDatasource;
+
 	private PodcastCatcherManager(Context context) {
-		podcastDBHelper = new PodcastCatcherDatabaseHelper(context);
-		podcastDBHelper.deleteAll();
-		podcastDBHelper.insertTestSubscriptions();
+		podcastDatasource = new PodcastCatcherDatasource(context);
+		podcastDatasource.deleteAll();
+		podcastDatasource.insertTestSubscriptions();
 
 		feedParser = new FeedParser();
 	}
@@ -38,7 +40,7 @@ public class PodcastCatcherManager {
 	}
 
 	public void insertSubscription(Subscription subscription) {
-		long subscriptionId = podcastDBHelper.insertSubscription(subscription);
+		long subscriptionId = podcastDatasource.insertSubscription(subscription);
 		List<SubscriptionItem> subscriptionItems = subscription.getSubscriptionItems();
 		if (subscriptionItems == null) {
 			return;
@@ -55,15 +57,15 @@ public class PodcastCatcherManager {
 
 	public void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
 		currSubscriptionItem.setSubscriptionId(subscriptionId);
-		podcastDBHelper.insertSubscriptionItem(subscriptionId, currSubscriptionItem);
+		podcastDatasource.insertSubscriptionItem(subscriptionId, currSubscriptionItem);
 	}
 
 	public SubscriptionCursor querySubscription() {
-		return podcastDBHelper.querySubscription();
+		return podcastDatasource.querySubscription();
 	}
 
 	public Subscription findSubscriptionById(long subscriptionId) {
-		SubscriptionCursor cursor = podcastDBHelper.findSubscriptionById(subscriptionId);
+		SubscriptionCursor cursor = podcastDatasource.findSubscriptionById(subscriptionId);
 		cursor.moveToFirst();
 		Subscription subscription = null;
 		if (!cursor.isAfterLast()) {
@@ -74,11 +76,11 @@ public class PodcastCatcherManager {
 	}
 
 	public SubscriptionItemCursor querySubscriptionItems(long subscriptionId) {
-		return podcastDBHelper.findSubscriptionItemsBySubscriptionId(subscriptionId);
+		return podcastDatasource.findSubscriptionItemsBySubscriptionId(subscriptionId);
 	}
 
 	public void checkSubscriptionFeedsAndUpdateIfNecessary() {
-		SubscriptionCursor subscriptionCursor = podcastDBHelper.querySubscription();
+		SubscriptionCursor subscriptionCursor = podcastDatasource.querySubscription();
 
 		subscriptionCursor.moveToFirst();
 		while (subscriptionCursor.isAfterLast() == false) {
@@ -103,11 +105,16 @@ public class PodcastCatcherManager {
 		ps.setSummary(fs.getSummary() == null ? null : fs.getSummary());
 		ps.setTitle(fs.getTitle() == null ? null : fs.getTitle());
 
-		podcastDBHelper.updateSubscription(ps);
+		podcastDatasource.updateSubscription(ps);
 
 	}
 
-	public PodcastCatcherDatabaseHelper getPodcastDBHelper() {
-		return podcastDBHelper;
+	public PodcastCatcherDatasource getPodcastDatasource() {
+		return podcastDatasource;
 	}
+
+	public ContentValues toContentValues(Subscription subscription) {
+		return podcastDatasource.toContentValues(subscription);
+	}
+
 }

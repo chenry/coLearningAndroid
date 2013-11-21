@@ -34,7 +34,7 @@
 
         <provider
             android:name="com.colearning.android.podcastcatcher.contentProvider.PodcastCatcherContentProvider"
-            android:authorities="com.colearning.android.podcstcatcher"
+            android:authorities="com.colearning.android.podcastcatcher"
             android:multiprocess="true" >
         </provider>
     </application>

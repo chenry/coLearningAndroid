@@ -1,6 +1,7 @@
 package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
+import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionService;
 
 public class SubscriptionListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "SubscriptionListFragment";
@@ -36,6 +38,8 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		setListAdapter(cursorAdapter);
 
+		Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
+		getActivity().startService(intent);
 	}
 
 	@Override
