@@ -1,6 +1,7 @@
 package com.colearning.android.podcastcatcher.contentProvider;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -52,16 +53,6 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int delete(Uri uri, String string, String[] stringArgs) {
-		return 0;
-	}
-
-	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		return null;
-	}
-
-	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		int uriType = sURIMatcher.match(uri);
 
@@ -80,6 +71,60 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 		}
 
 		return updateCount;
+	}
+
+	@Override
+	public int delete(Uri uri, String string, String[] stringArgs) {
+		int deletedRecordsCount = 0;
+		int uriType = sURIMatcher.match(uri);
+		switch (uriType) {
+		case SUBSCRIPTION_ID:
+			String id = uri.getLastPathSegment();
+			String whereClause = PodcastCatcherContract.Subscription.Columns._ID + " = " + id;
+			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.Columns._ID, whereClause, null);
+			break;
+		case SUBSCRIPTIONS_LIST:
+			mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.Columns._ID, null, null);
+			break;
+		default:
+			throw new IllegalArgumentException("Unrecognized uri: " + uri);
+		}
+
+		if (deletedRecordsCount > 0) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
+		return deletedRecordsCount;
+	}
+
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		int uriType = sURIMatcher.match(uri);
+		long insertedId = -1L;
+		Uri insertedUri = null;
+		switch (uriType) {
+		case SUBSCRIPTIONS_LIST:
+			insertedId = mPodcastDatasource.getWritableDatabase().insert(PodcastCatcherContract.Subscription.TABLE_NAME, null, values);
+			insertedUri = uriForId(uri, insertedId);
+
+			break;
+
+		default:
+			throw new IllegalArgumentException("Unsupported operation for this uri: " + uri);
+		}
+
+		if (insertedUri != null) {
+			getContext().getContentResolver().notifyChange(insertedUri, null);
+		}
+
+		return insertedUri;
+
+	}
+
+	private Uri uriForId(Uri uri, long id) {
+		if (id <= 0) {
+			throw new IllegalArgumentException("Encountered problems while inserting into uri: " + uri);
+		}
+		return ContentUris.withAppendedId(uri, id);
 	}
 
 	@Override
