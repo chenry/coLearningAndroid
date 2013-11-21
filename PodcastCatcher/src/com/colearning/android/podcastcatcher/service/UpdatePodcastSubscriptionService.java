@@ -1,6 +1,8 @@
 package com.colearning.android.podcastcatcher.service;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +19,28 @@ import com.colearning.android.podcastcatcher.model.Subscription;
 public class UpdatePodcastSubscriptionService extends IntentService {
 
 	private static final String TAG = "UpdatePodcastSubscriptionService";
+	private static final long UPDATE_INTERVAL = 1000 * 60 * 5; // 5 minutes
 	private FeedParser mFeedParser;
+	private PodcastCatcherManager podcastManager;
 
 	public UpdatePodcastSubscriptionService() {
 		super(TAG);
 		mFeedParser = new FeedParser();
+
+	}
+
+	public static void setServiceAlarm(Context context, boolean isOn) {
+		Intent intent = new Intent(context, UpdatePodcastSubscriptionService.class);
+		PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+		if (isOn) {
+			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), UPDATE_INTERVAL, pendingIntent);
+		} else {
+			alarmManager.cancel(pendingIntent);
+			pendingIntent.cancel();
+		}
 	}
 
 	@Override
@@ -30,9 +49,11 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 			return;
 		}
 
-		Log.i(TAG, "Starting..." + intent);
-		PodcastCatcherManager podcastManager = PodcastCatcherManager.create(getApplicationContext());
+		updateFeeds(intent);
+	}
 
+	private void updateFeeds(Intent intent) {
+		Log.i(TAG, "Starting..." + intent);
 		ContentResolver cr = getContentResolver();
 
 		//@formatter:off
@@ -44,6 +65,8 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 				null /* sortOrder */);
 		//@formatter:on
 
+		Log.i(TAG, "Found " + subscriptions.getCount() + " subscriptions to update...");
+		podcastManager = PodcastCatcherManager.create(getApplicationContext());
 		while (subscriptions.moveToNext()) {
 			long id = subscriptions.getLong(subscriptions.getColumnIndex(PodcastCatcherContract.Subscription.Columns._ID));
 			Subscription updatedSubscription = mFeedParser.parseSubscription(subscriptions.getString(subscriptions
@@ -52,7 +75,6 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 			cr.update(updatedSubscriptionUri, podcastManager.toContentValues(updatedSubscription), null, null);
 
 		}
-
 	}
 
 	@SuppressWarnings("deprecation")
