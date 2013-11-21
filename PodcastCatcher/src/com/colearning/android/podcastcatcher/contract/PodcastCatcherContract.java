@@ -12,6 +12,8 @@ public final class PodcastCatcherContract {
 		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + ".subscriptions";
 		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + ".subscriptions";
 
+		public static final String TABLE_NAME = "subscription";
+
 		public static final class Columns {
 			public static final String _ID = "_id";
 			public static final String FEED_URL = "feed_url";
@@ -33,6 +35,7 @@ public final class PodcastCatcherContract {
 		public static final Uri CONTENT_URI = Uri.withAppendedPath(PodcastCatcherContract.CONTENT_URI, "subscriptionItems");
 		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + ".subscriptionItems";
 		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + ".subscriptionItems";
+		public static final String TABLE_NAME = "subscription_item";
 
 		public static final class Columns {
 			public static final String _ID = "_id";

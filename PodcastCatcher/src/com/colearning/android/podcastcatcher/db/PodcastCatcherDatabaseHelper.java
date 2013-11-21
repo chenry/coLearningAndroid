@@ -19,9 +19,6 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "podcastCatcher.sqlite";
 	private static final int VERSION = 1;
 
-	public static final String TABLE_SUBSCRIPTION = "subscription";
-	public static final String TABLE_SUBSCRIPTION_ITEM = "subscription_item";
-
 	public PodcastCatcherDatabaseHelper(Context context) {
 		super(context, DB_NAME, null, VERSION);
 	}
@@ -66,7 +63,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public long insertSubscription(Subscription subscription) {
-		return getWritableDatabase().insert(TABLE_SUBSCRIPTION, null, toContentValues(subscription));
+		return getWritableDatabase().insert(PodcastCatcherContract.Subscription.TABLE_NAME, null, toContentValues(subscription));
 	}
 
 	public void insertSubscriptionItems(long subscriptionId, List<SubscriptionItem> subscriptionItems) {
@@ -86,12 +83,12 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.TITLE, currSubscriptionItem.getTitle());
 
-		getWritableDatabase().insert(TABLE_SUBSCRIPTION_ITEM, null, contentValues);
+		getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, contentValues);
 	}
 
 	public void deleteAll() {
-		getWritableDatabase().delete(TABLE_SUBSCRIPTION, null, null);
-		getWritableDatabase().delete(TABLE_SUBSCRIPTION_ITEM, null, null);
+		getWritableDatabase().delete(PodcastCatcherContract.Subscription.TABLE_NAME, null, null);
+		getWritableDatabase().delete(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, null);
 	}
 
 	public void insertTestSubscriptions() {
@@ -124,14 +121,14 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public SubscriptionCursor querySubscription() {
-		Cursor cursor = getReadableDatabase().query(TABLE_SUBSCRIPTION, null, null, null, null, null, null);
+		Cursor cursor = getReadableDatabase().query(PodcastCatcherContract.Subscription.TABLE_NAME, null, null, null, null, null, null);
 		return new SubscriptionCursor(cursor);
 	}
 
 	public SubscriptionCursor findSubscriptionById(long id) {
 		//@formatter:off
 		Cursor cursor = getReadableDatabase().query(
-				TABLE_SUBSCRIPTION, 
+				PodcastCatcherContract.Subscription.TABLE_NAME, 
 				null, 
 				PodcastCatcherContract.Subscription.Columns._ID + " = ?", 
 				new String[] { String.valueOf(id) }, 
@@ -146,7 +143,7 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	public SubscriptionItemCursor findSubscriptionItemsBySubscriptionId(long subscriptionId) {
 		//@formatter:off
 		Cursor cursor = getReadableDatabase().query(
-				TABLE_SUBSCRIPTION_ITEM, 
+				PodcastCatcherContract.SubscriptionItem.TABLE_NAME, 
 				null, 
 				PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID + " = ?", 
 				new String[] { String.valueOf(subscriptionId) }, 
@@ -236,7 +233,8 @@ public class PodcastCatcherDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void updateSubscription(Subscription ps) {
-		getWritableDatabase().update(TABLE_SUBSCRIPTION, toContentValues(ps), "_id = ?", new String[] { String.valueOf(ps.getId()) });
+		getWritableDatabase().update(PodcastCatcherContract.Subscription.TABLE_NAME, toContentValues(ps), "_id = ?",
+				new String[] { String.valueOf(ps.getId()) });
 	}
 
 	private ContentValues toContentValues(Subscription subscription) {
