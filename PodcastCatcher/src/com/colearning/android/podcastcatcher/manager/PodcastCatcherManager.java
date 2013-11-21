@@ -106,4 +106,8 @@ public class PodcastCatcherManager {
 		podcastDBHelper.updateSubscription(ps);
 
 	}
+
+	public PodcastCatcherDatabaseHelper getPodcastDBHelper() {
+		return podcastDBHelper;
+	}
 }

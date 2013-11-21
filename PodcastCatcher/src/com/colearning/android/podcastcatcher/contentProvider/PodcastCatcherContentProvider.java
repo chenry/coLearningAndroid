@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 
 public class PodcastCatcherContentProvider extends ContentProvider {
@@ -15,9 +16,16 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	public static final int SUBSCRIPTION_ID = 110;
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	private PodcastCatcherDatabaseHelper mPodcastDBHelper;
 	static {
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, "subscriptions", SUBSCRIPTIONS);
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, "subscription/#", SUBSCRIPTION_ID);
+	}
+
+	@Override
+	public boolean onCreate() {
+		mPodcastDBHelper = PodcastCatcherManager.create(getContext()).getPodcastDBHelper();
+		return true;
 	}
 
 	@Override
@@ -39,13 +47,8 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public boolean onCreate() {
-		podcastCatcherManager = PodcastCatcherManager.create(getContext());
-		return true;
-	}
-
-	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+
 		return null;
 	}
 
