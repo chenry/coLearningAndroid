@@ -1,16 +1,23 @@
 package com.colearning.android.podcastcatcher;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
@@ -18,6 +25,7 @@ import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
 public class SubscriptionDetailFragment extends Fragment {
 	public static final String SUBSCRIPTION_ID = "com.colearning.android.podcastcatcher.subscription_id";
+	private static final String TAG = "SubscriptionDetailFragment";
 	private Subscription subscription;
 	private PodcastCatcherManager podcastCatcherManager;
 	private SubscriptionItemCursor subscriptionItemsCursor;
@@ -35,12 +43,38 @@ public class SubscriptionDetailFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		setHasOptionsMenu(true);
 		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
 		Long subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
 		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
 		subscriptionItemsCursor = podcastCatcherManager.querySubscriptionItems(subscriptionId);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_subscription_detail, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case R.id.menu_item_delete_subscription:
+			handleDeleteSubscription();
+			getActivity().finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void handleDeleteSubscription() {
+		ContentResolver cr = getActivity().getContentResolver();
+		Uri uri = Uri.withAppendedPath(PodcastCatcherContract.Subscription.CONTENT_URI, String.valueOf(subscription.getId()));
+		int deleteCount = cr.delete(uri, null, null);
+		Log.i(TAG, "Deleted: " + deleteCount);
 	}
 
 	@Override

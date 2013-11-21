@@ -65,12 +65,18 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 				null /* sortOrder */);
 		//@formatter:on
 
+		if (subscriptions == null) {
+			return;
+		}
+
 		Log.i(TAG, "Found " + subscriptions.getCount() + " subscriptions to update...");
 		podcastManager = PodcastCatcherManager.create(getApplicationContext());
 		while (subscriptions.moveToNext()) {
 			long id = subscriptions.getLong(subscriptions.getColumnIndex(PodcastCatcherContract.Subscription.Columns._ID));
-			Subscription updatedSubscription = mFeedParser.parseSubscription(subscriptions.getString(subscriptions
-					.getColumnIndex(PodcastCatcherContract.Subscription.Columns.FEED_URL)));
+			String feedUrl = subscriptions.getString(subscriptions.getColumnIndex(PodcastCatcherContract.Subscription.Columns.FEED_URL));
+
+			Log.i(TAG, "SubscriptionId: " + id + " feedUrl: " + feedUrl);
+			Subscription updatedSubscription = mFeedParser.parseSubscription(feedUrl);
 			Uri updatedSubscriptionUri = Uri.withAppendedPath(PodcastCatcherContract.Subscription.CONTENT_URI, String.valueOf(id));
 			cr.update(updatedSubscriptionUri, podcastManager.toContentValues(updatedSubscription), null, null);
 

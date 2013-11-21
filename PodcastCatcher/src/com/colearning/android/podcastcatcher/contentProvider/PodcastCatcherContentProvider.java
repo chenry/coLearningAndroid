@@ -81,7 +81,7 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 		case SUBSCRIPTION_ID:
 			String id = uri.getLastPathSegment();
 			String whereClause = PodcastCatcherContract.Subscription.Columns._ID + " = " + id;
-			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.Columns._ID, whereClause, null);
+			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.TABLE_NAME, whereClause, null);
 			break;
 		case SUBSCRIPTIONS_LIST:
 			mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.Columns._ID, null, null);

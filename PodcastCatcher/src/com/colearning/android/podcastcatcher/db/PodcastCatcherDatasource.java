@@ -200,7 +200,6 @@ public class PodcastCatcherDatasource {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(PodcastCatcherContract.Subscription.Columns.AUTHOR, subscription.getAuthor());
 		contentValues.put(PodcastCatcherContract.Subscription.Columns.CATEGORY, subscription.getCategory());
-		contentValues.put(PodcastCatcherContract.Subscription.Columns.FEED_URL, subscription.getFeedUrl());
 		contentValues.put(PodcastCatcherContract.Subscription.Columns.IMAGE_URL, subscription.getImageUrl());
 		contentValues.put(PodcastCatcherContract.Subscription.Columns.SUBTITLE, subscription.getSubTitle());
 		contentValues.put(PodcastCatcherContract.Subscription.Columns.SUMMARY, subscription.getSummary());
