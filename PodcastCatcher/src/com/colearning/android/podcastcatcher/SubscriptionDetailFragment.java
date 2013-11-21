@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.colearning.android.podcastcatcher.db.PodcastCatcherDatabaseHelper.SubscriptionItemCursor;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;

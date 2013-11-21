@@ -20,7 +20,6 @@ public class Subscription {
 	private List<SubscriptionItem> subscriptionItems;
 
 	public Subscription() {
-		this.id = -1L;
 	}
 
 	public void setTitle(String title) {
