@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -24,7 +25,9 @@ import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionSe
 
 public class SubscriptionListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "SubscriptionListFragment";
-	private static final int SUBSCRIPTION_LIST_LOADER = 20;
+	private static final int SUBSCRIPTION_LIST_LOADER = 10;
+	private static final String DIALOG_FEED_URL = "DIALOG_FEED_URL";
+	private static final int REQUEST_FEED_URL = 0;
 	private SubscriptionItemSelectedListener itemSelectedListener;
 	private SimpleCursorAdapter cursorAdapter;
 	private PodcastCatcherManager mPodcastCatcherManager;
@@ -38,15 +41,16 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		mPodcastCatcherManager = PodcastCatcherManager.create(getActivity());
+		fillData();
+	}
+
+	private void fillData() {
 		String[] uiBindFrom = { PodcastCatcherContract.Subscription.Columns.TITLE, PodcastCatcherContract.Subscription.Columns.SUBTITLE };
 		int[] uiBindTo = { android.R.id.text1, android.R.id.text2 };
-
 		getLoaderManager().initLoader(SUBSCRIPTION_LIST_LOADER, null, this);
 		cursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, null, uiBindFrom, uiBindTo,
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		setListAdapter(cursorAdapter);
-
-		UpdatePodcastSubscriptionService.setServiceAlarm(getActivity(), true);
 	}
 
 	@Override
@@ -72,24 +76,14 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 	}
 
 	private void handleNewSubscription() {
-		ContentResolver contentResolver = getActivity().getContentResolver();
-		Subscription subscription = getNewSubscription();
-		contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, mPodcastCatcherManager.toContentValues(subscription));
-		Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
-		getActivity().startService(intent);
-	}
-
-	private Subscription getNewSubscription() {
-		Subscription subscription = new Subscription();
-
-		subscription.setFeedUrl("http://feeds.feedburner.com/javaposse");
-
-		return subscription;
+		FragmentManager fm = getActivity().getSupportFragmentManager();
+		FeedUrlDialog dialog = new FeedUrlDialog();
+		dialog.setTargetFragment(this, REQUEST_FEED_URL);
+		dialog.show(fm, DIALOG_FEED_URL);
 	}
 
 	@Override
 	public void onDestroy() {
-		// subscriptionCursor.close();
 		super.onDestroy();
 	}
 
@@ -130,4 +124,23 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		cursorAdapter.swapCursor(null);
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != Activity.RESULT_OK) {
+			return;
+		}
+
+		if (requestCode == REQUEST_FEED_URL) {
+			Subscription subscription = new Subscription();
+			String feedUrl = (String) data.getSerializableExtra(FeedUrlDialog.EXTRA_FEED_URL);
+			subscription.setFeedUrl(feedUrl);
+
+			ContentResolver contentResolver = getActivity().getContentResolver();
+			contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, mPodcastCatcherManager.toContentValues(subscription));
+			Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
+			getActivity().startService(intent);
+
+		}
+
+	}
 }
