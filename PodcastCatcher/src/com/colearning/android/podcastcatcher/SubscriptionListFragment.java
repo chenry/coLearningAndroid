@@ -2,6 +2,7 @@ package com.colearning.android.podcastcatcher;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.widget.ListView;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
-import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.service.UpdatePodcastSubscriptionService;
 
 public class SubscriptionListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -41,10 +41,12 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		mPodcastCatcherManager = PodcastCatcherManager.create(getActivity());
-		fillData();
+		populateScreen();
+
+		UpdatePodcastSubscriptionService.setServiceAlarm(getActivity(), true);
 	}
 
-	private void fillData() {
+	private void populateScreen() {
 		String[] uiBindFrom = { PodcastCatcherContract.Subscription.Columns.TITLE, PodcastCatcherContract.Subscription.Columns.SUBTITLE };
 		int[] uiBindTo = { android.R.id.text1, android.R.id.text2 };
 		getLoaderManager().initLoader(SUBSCRIPTION_LIST_LOADER, null, this);
@@ -134,12 +136,12 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		}
 
 		if (requestCode == REQUEST_FEED_URL) {
-			Subscription subscription = new Subscription();
 			String feedUrl = (String) data.getSerializableExtra(FeedUrlDialog.EXTRA_FEED_URL);
-			subscription.setFeedUrl(feedUrl);
 
 			ContentResolver contentResolver = getActivity().getContentResolver();
-			contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, mPodcastCatcherManager.toContentValues(subscription));
+			ContentValues values = new ContentValues();
+			values.put(PodcastCatcherContract.Subscription.Columns.FEED_URL, feedUrl);
+			contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, values);
 			handleRefreshFeeds();
 
 		}

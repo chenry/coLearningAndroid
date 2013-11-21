@@ -21,7 +21,7 @@ public class FeedUrlDialog extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_feed_url, null);
 
-		mFeedUrl = "http://feeds.feedburner.com/javaposse";
+		mFeedUrl = "http://feeds.feedburner.com/AndroidCentralPodcast";
 		EditText txtFeedUrl = (EditText) view.findViewById(R.id.editTxt_feed_url);
 		txtFeedUrl.setText(mFeedUrl);
 		txtFeedUrl.addTextChangedListener(new TextWatcher() {
