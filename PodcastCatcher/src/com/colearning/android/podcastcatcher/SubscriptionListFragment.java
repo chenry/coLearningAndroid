@@ -70,6 +70,9 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 		case R.id.menu_item_new_subscription:
 			handleNewSubscription();
 			return true;
+		case R.id.menu_item_refresh_feeds:
+			handleRefreshFeeds();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -137,10 +140,15 @@ public class SubscriptionListFragment extends ListFragment implements LoaderMana
 
 			ContentResolver contentResolver = getActivity().getContentResolver();
 			contentResolver.insert(PodcastCatcherContract.Subscription.CONTENT_URI, mPodcastCatcherManager.toContentValues(subscription));
-			Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
-			getActivity().startService(intent);
+			handleRefreshFeeds();
 
 		}
 
 	}
+
+	private void handleRefreshFeeds() {
+		Intent intent = new Intent(getActivity(), UpdatePodcastSubscriptionService.class);
+		getActivity().startService(intent);
+	}
+
 }
