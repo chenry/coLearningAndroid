@@ -1,5 +1,7 @@
 package com.colearning.android.podcastcatcher.model;
 
+import java.util.Date;
+
 public class SubscriptionItem {
 
 	private long id;
@@ -11,6 +13,7 @@ public class SubscriptionItem {
 	private String itemDesc;
 	private String mediaUrl;
 	private String fileLocation;
+	private Date pubDate;
 
 	public long getId() {
 		return id;
@@ -82,6 +85,21 @@ public class SubscriptionItem {
 
 	public void setFileLocation(String fileLocation) {
 		this.fileLocation = fileLocation;
+	}
+
+	public Date getPubDate() {
+		return pubDate;
+	}
+
+	public void setPubDate(Date pubDate) {
+		this.pubDate = pubDate;
+	}
+
+	@Override
+	public String toString() {
+		return "SubscriptionItem [id=" + id + ", subscriptionId=" + subscriptionId + ", title=" + title + ", guidId=" + guidId + ", linkUrl=" + linkUrl
+				+ ", thumbnailUrl=" + thumbnailUrl + ", itemDesc=" + itemDesc + ", mediaUrl=" + mediaUrl + ", fileLocation=" + fileLocation + ", pubDate="
+				+ pubDate + "]";
 	}
 
 }

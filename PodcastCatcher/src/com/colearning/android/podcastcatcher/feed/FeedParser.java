@@ -19,6 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.util.Log;
 
 import com.colearning.android.podcastcatcher.model.Subscription;
+import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
 public class FeedParser {
 
@@ -43,9 +44,22 @@ public class FeedParser {
 		return null;
 	}
 
+	private Date getDateIfAvailable(String dateAsString) {
+		if (dateAsString == null) {
+			return null;
+		}
+
+		String betterDateAsString = dateAsString.split("\\+")[0];
+
+		DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+		return formatter.parse(betterDateAsString, new ParsePosition(0));
+
+	}
+
 	private class SubscriptionHandler extends DefaultHandler {
 		private Subscription subscription;
-		private boolean foundItem = false;
+		private SubscriptionItem currSubscriptionItem;
+		private boolean inItem = false;
 		private StringWriter valueSw = null;
 		private boolean startNewStringBuffer = true;
 
@@ -56,25 +70,42 @@ public class FeedParser {
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-			if (foundItem) {
-				return;
-			}
-
 			if ("item".equals(localName)) {
-				foundItem = true;
-				return;
+				inItem = true;
+				currSubscriptionItem = new SubscriptionItem();
+				subscription.addSubscriptionItem(currSubscriptionItem);
 			}
 		}
 
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
-			if (foundItem) {
+			startNewStringBuffer = true;
+
+			if ("item".equals(localName)) {
+				currSubscriptionItem = new SubscriptionItem();
 				return;
 			}
 
-			startNewStringBuffer = true;
-
 			String value = valueSw.toString().trim();
+			if (inItem) {
+				endSubscriptionItemElement(uri, localName, qName, value);
+			} else {
+				endSubscriptionElement(uri, localName, qName, value);
+			}
+
+		}
+
+		@Override
+		public void characters(char[] ch, int start, int length) throws SAXException {
+			if (startNewStringBuffer) {
+				valueSw = new StringWriter();
+				startNewStringBuffer = false;
+			}
+
+			valueSw.append(new String(ch, start, length));
+		}
+
+		public void endSubscriptionElement(String uri, String localName, String qName, String value) {
 			if ("title".equals(localName)) {
 				subscription.setTitle(value);
 			}
@@ -103,30 +134,25 @@ public class FeedParser {
 			}
 		}
 
-		@Override
-		public void characters(char[] ch, int start, int length) throws SAXException {
-			if (startNewStringBuffer) {
-				valueSw = new StringWriter();
-				startNewStringBuffer = false;
+		private void endSubscriptionItemElement(String uri, String localName, String qName, String value) {
+			if ("title".equals(localName)) {
+				currSubscriptionItem.setTitle(value);
+			} else if ("pubDate".equals(localName)) {
+				currSubscriptionItem.setPubDate(getDateIfAvailable(value));
+			} else if ("guid".equals(localName)) {
+				currSubscriptionItem.setGuidId(value);
+				// private String thumbnailUrl;
+				// private String mediaUrl;
+			} else if ("link".equals(localName)) {
+				currSubscriptionItem.setLinkUrl(value);
+			} else if ("description".equals(localName)) {
+				currSubscriptionItem.setItemDesc(value);
 			}
-
-			valueSw.append(new String(ch, start, length));
 		}
 
 		public Subscription getSubscription() {
 			return subscription;
 		}
-	}
-
-	private Date getDateIfAvailable(String dateAsString) {
-		if (dateAsString == null) {
-			return null;
-		}
-
-		String betterDateAsString = dateAsString.split("\\+")[0];
-
-		DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-		return formatter.parse(betterDateAsString, new ParsePosition(0));
 
 	}
 
