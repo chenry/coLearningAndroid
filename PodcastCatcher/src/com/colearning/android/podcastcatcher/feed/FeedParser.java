@@ -1,17 +1,22 @@
 package com.colearning.android.podcastcatcher.feed;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
+import java.io.StringWriter;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
+import android.util.Log;
 
 import com.colearning.android.podcastcatcher.model.Subscription;
 
@@ -20,70 +25,100 @@ public class FeedParser {
 	private static final String TAG = "FeedParser";
 
 	public Subscription parseSubscription(String urlPath) {
-		String xml = parseFeedToXmlString(urlPath);
-		Subscription subscription = new Subscription();
 		try {
-			XmlPullParser parser = createXmlPullParser();
-			parser.setInput(new StringReader(xml));
-
-			int eventType = parser.next();
-			boolean hasSeenItem = false;
-			while (eventType != XmlPullParser.END_DOCUMENT) {
-
-				if (hasSeenItem) {
-					eventType = parser.next();
-					continue;
-				}
-
-				if (eventType == XmlPullParser.START_TAG) {
-					// Log.i(TAG, "Name: " + parser.getName());
-					if ("item".equals(parser.getName())) {
-						hasSeenItem = true;
-						eventType = parser.next();
-						continue;
-					}
-
-					// private Date lastPubDate;
-
-					if ("title".equals(parser.getName())) {
-						subscription.setTitle(getTextIfAvailable(parser));
-					}
-
-					if ("pubDate".equals(parser.getName())) {
-						subscription.setLastPubDate(getDateIfAvailable(parser));
-					}
-
-					if ("image/url".equals(parser.getName())) {
-						// FIXME CH: implement this later
-					}
-
-					if ("media:category".equals(parser.getName())) {
-						subscription.setCategory(getTextIfAvailable(parser));
-					}
-
-					if ("description".equals(parser.getName())) {
-						subscription.setSummary(getTextIfAvailable(parser));
-					}
-
-					if ("itunes:author".equals(parser.getName())) {
-						subscription.setAuthor(getTextIfAvailable(parser));
-					}
-
-					if ("itunes:subtitle".equals(parser.getName())) {
-						subscription.setSubTitle(getTextIfAvailable(parser));
-					}
-				}
-				eventType = parser.next();
-			}
+			SAXParserFactory saxPF = SAXParserFactory.newInstance();
+			SAXParser parser = saxPF.newSAXParser();
+			XMLReader xmlReader = parser.getXMLReader();
+			URL url = new URL(urlPath);
+			/**
+			 * Create the Handler to handle each of the XML tags.
+			 **/
+			SubscriptionHandler handler = new SubscriptionHandler();
+			xmlReader.setContentHandler(handler);
+			xmlReader.parse(new InputSource(url.openStream()));
+			return handler.getSubscription();
 		} catch (Exception e) {
-
+			Log.e(TAG, "Encountered problems....");
 		}
-
-		return subscription;
+		return null;
 	}
 
-	private Date getDateIfAvailable(XmlPullParser parser) throws Exception {
-		String dateAsString = getTextIfAvailable(parser);
+	private class SubscriptionHandler extends DefaultHandler {
+		private Subscription subscription;
+		private boolean foundItem = false;
+		private StringWriter valueSw = null;
+		private boolean startNewStringBuffer = true;
+
+		@Override
+		public void startDocument() throws SAXException {
+			subscription = new Subscription();
+		}
+
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+			if (foundItem) {
+				return;
+			}
+
+			if ("item".equals(localName)) {
+				foundItem = true;
+				return;
+			}
+		}
+
+		@Override
+		public void endElement(String uri, String localName, String qName) throws SAXException {
+			if (foundItem) {
+				return;
+			}
+
+			startNewStringBuffer = true;
+
+			String value = valueSw.toString().trim();
+			if ("title".equals(localName)) {
+				subscription.setTitle(value);
+			}
+			if ("pubDate".equals(localName)) {
+				subscription.setLastPubDate(getDateIfAvailable(value));
+			}
+
+			if ("image/url".equals(localName)) {
+				// FIXME CH: implement this later
+			}
+
+			if ("media:category".equals(qName)) {
+				subscription.setCategory(value);
+			}
+
+			if ("description".equals(localName)) {
+				subscription.setSummary(value);
+			}
+
+			if ("itunes:author".equals(qName)) {
+				subscription.setAuthor(value);
+			}
+
+			if ("itunes:subtitle".equals(qName)) {
+				subscription.setSubTitle(value);
+			}
+		}
+
+		@Override
+		public void characters(char[] ch, int start, int length) throws SAXException {
+			if (startNewStringBuffer) {
+				valueSw = new StringWriter();
+				startNewStringBuffer = false;
+			}
+
+			valueSw.append(new String(ch, start, length));
+		}
+
+		public Subscription getSubscription() {
+			return subscription;
+		}
+	}
+
+	private Date getDateIfAvailable(String dateAsString) {
 		if (dateAsString == null) {
 			return null;
 		}
@@ -92,44 +127,7 @@ public class FeedParser {
 
 		DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
 		return formatter.parse(betterDateAsString, new ParsePosition(0));
+
 	}
 
-	private String getTextIfAvailable(XmlPullParser parser) throws Exception {
-		int eventType = parser.next();
-		if (eventType == XmlPullParser.TEXT) {
-			return parser.getText();
-		}
-		return null;
-	}
-
-	private XmlPullParser createXmlPullParser() throws Exception {
-		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-		return factory.newPullParser();
-	}
-
-	public String parseFeedToXmlString(String urlPath) {
-
-		try {
-			URL url = new URL(urlPath);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-			InputStream is = connection.getInputStream();
-
-			if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				return null;
-			}
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			int bytesRead = 0;
-			byte[] buffer = new byte[1024];
-			while ((bytesRead = is.read(buffer)) > 0) {
-				baos.write(buffer, 0, bytesRead);
-			}
-			baos.flush();
-			baos.close();
-			return new String(baos.toByteArray());
-		} catch (Exception e) {
-			return null;
-		}
-	}
 }
