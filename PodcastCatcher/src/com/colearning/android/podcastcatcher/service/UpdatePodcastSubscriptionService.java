@@ -100,15 +100,8 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 			//@formatter:on
 			if (query.getCount() == 0) {
 				insertSubscriptionItem(subscriptionId, currSubscriptionItem);
-			} else {
-				updateSubscriptionItem(subscriptionId, currSubscriptionItem);
 			}
 		}
-	}
-
-	private void updateSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
-		Uri uri = Uri.withAppendedPath(PodcastCatcherContract.SubscriptionItem.CONTENT_URI, String.valueOf(currSubscriptionItem.getId()));
-		getContentResolver().update(uri, values, where, selectionArgs)
 	}
 
 	private void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {

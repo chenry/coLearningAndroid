@@ -17,6 +17,7 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 
 	private static final int SUBSCRIPTIONS_LIST = 1;
 	private static final int SUBSCRIPTION_ID = 2;
+	private static final int SUBSCRIPTION_ITEMS_LIST = 3;
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	private PodcastCatcherDatasource mPodcastDatasource;
@@ -24,6 +25,7 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	static {
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.Subscription.BASE_PATH, SUBSCRIPTIONS_LIST);
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.Subscription.BASE_PATH + "/#", SUBSCRIPTION_ID);
+		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.SubscriptionItem.BASE_PATH, SUBSCRIPTION_ITEMS_LIST);
 	}
 
 	@Override
@@ -35,14 +37,18 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-		queryBuilder.setTables(PodcastCatcherContract.Subscription.TABLE_NAME);
 		int uriType = sURIMatcher.match(uri);
 		switch (uriType) {
 		case SUBSCRIPTION_ID:
+			queryBuilder.setTables(PodcastCatcherContract.Subscription.TABLE_NAME);
 			queryBuilder.appendWhere(PodcastCatcherContract.Subscription.Columns._ID + "=" + uri.getLastPathSegment());
 			break;
 		case SUBSCRIPTIONS_LIST:
 			// no filter
+			queryBuilder.setTables(PodcastCatcherContract.Subscription.TABLE_NAME);
+			break;
+		case SUBSCRIPTION_ITEMS_LIST:
+			queryBuilder.setTables(PodcastCatcherContract.SubscriptionItem.TABLE_NAME);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI");
@@ -106,6 +112,9 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 			insertedId = mPodcastDatasource.getWritableDatabase().insert(PodcastCatcherContract.Subscription.TABLE_NAME, null, values);
 			insertedUri = uriForId(uri, insertedId);
 
+			break;
+		case SUBSCRIPTION_ITEMS_LIST:
+			mPodcastDatasource.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, values);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported operation for this uri: " + uri);
