@@ -32,6 +32,12 @@ public class PodcastCatcherDatasource {
 	}
 
 	public void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
+		ContentValues contentValues = toContentValues(subscriptionId, currSubscriptionItem);
+
+		dbHelper.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, contentValues);
+	}
+
+	private ContentValues toContentValues(long subscriptionId, SubscriptionItem currSubscriptionItem) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.FILE_LOCATION, currSubscriptionItem.getFileLocation());
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID, currSubscriptionItem.getGuidId());
@@ -41,8 +47,7 @@ public class PodcastCatcherDatasource {
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID, subscriptionId);
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.THUMBNAIL_URL, currSubscriptionItem.getThumbnailUrl());
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.TITLE, currSubscriptionItem.getTitle());
-
-		dbHelper.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, contentValues);
+		return contentValues;
 	}
 
 	public void deleteAll() {

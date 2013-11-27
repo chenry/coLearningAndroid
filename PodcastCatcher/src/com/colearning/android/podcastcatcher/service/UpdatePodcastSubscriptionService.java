@@ -1,5 +1,7 @@
 package com.colearning.android.podcastcatcher.service;
 
+import java.util.Collection;
+
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -15,6 +17,7 @@ import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 import com.colearning.android.podcastcatcher.feed.FeedParser;
 import com.colearning.android.podcastcatcher.manager.PodcastCatcherManager;
 import com.colearning.android.podcastcatcher.model.Subscription;
+import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
 public class UpdatePodcastSubscriptionService extends IntentService {
 
@@ -80,7 +83,31 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 			Uri updatedSubscriptionUri = Uri.withAppendedPath(PodcastCatcherContract.Subscription.CONTENT_URI, String.valueOf(id));
 			cr.update(updatedSubscriptionUri, podcastManager.toContentValues(updatedSubscription), null, null);
 
+			updateSubscriptionItems(id, updatedSubscription.getSubscriptionItems());
+
 		}
+	}
+
+	private void updateSubscriptionItems(long subscriptionId, Collection<SubscriptionItem> subscriptionItems) {
+
+		for (SubscriptionItem currSubscriptionItem : subscriptionItems) {
+			//@formatter:off
+			Cursor query = getContentResolver().query(
+					PodcastCatcherContract.SubscriptionItem.CONTENT_URI, new String[]{PodcastCatcherContract.SubscriptionItem.Columns._ID}, 
+					PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID + " = ?", 
+					new String[]{currSubscriptionItem.getGuidId()}, 
+					null);
+			//@formatter:on
+			if (query.getCount() == 0) {
+				insertSubscriptionItem(subscriptionId, currSubscriptionItem);
+			} else {
+				updateSubscriptionItem(subscriptionId, currSubscriptionItem);
+			}
+		}
+	}
+
+	private void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
+		getContentResolver().insert(PodcastCatcherContract.SubscriptionItem.CONTENT_URI, podcastManager.toContentValues(currSubscriptionItem));
 	}
 
 	@SuppressWarnings("deprecation")

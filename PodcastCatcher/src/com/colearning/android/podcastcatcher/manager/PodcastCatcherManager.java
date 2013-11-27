@@ -114,4 +114,8 @@ public class PodcastCatcherManager {
 		return podcastDatasource.toContentValues(subscription);
 	}
 
+	public ContentValues toContentValues(SubscriptionItem subscriptionItem) {
+		return podcastDatasource.toContentValues(subscriptionItem);
+	}
+
 }
