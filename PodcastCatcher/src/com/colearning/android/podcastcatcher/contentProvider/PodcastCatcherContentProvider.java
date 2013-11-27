@@ -107,7 +107,6 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 			insertedUri = uriForId(uri, insertedId);
 
 			break;
-
 		default:
 			throw new IllegalArgumentException("Unsupported operation for this uri: " + uri);
 		}

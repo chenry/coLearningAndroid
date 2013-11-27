@@ -37,7 +37,7 @@ public class PodcastCatcherDatasource {
 		dbHelper.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, contentValues);
 	}
 
-	private ContentValues toContentValues(long subscriptionId, SubscriptionItem currSubscriptionItem) {
+	public ContentValues toContentValues(long subscriptionId, SubscriptionItem currSubscriptionItem) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.FILE_LOCATION, currSubscriptionItem.getFileLocation());
 		contentValues.put(PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID, currSubscriptionItem.getGuidId());

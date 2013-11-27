@@ -94,8 +94,8 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 			//@formatter:off
 			Cursor query = getContentResolver().query(
 					PodcastCatcherContract.SubscriptionItem.CONTENT_URI, new String[]{PodcastCatcherContract.SubscriptionItem.Columns._ID}, 
-					PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID + " = ?", 
-					new String[]{currSubscriptionItem.getGuidId()}, 
+					PodcastCatcherContract.SubscriptionItem.Columns.GUID_ID + " = ? and " + PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID + " = ?" , 
+					new String[]{currSubscriptionItem.getGuidId(), String.valueOf(subscriptionId)}, 
 					null);
 			//@formatter:on
 			if (query.getCount() == 0) {
@@ -106,8 +106,13 @@ public class UpdatePodcastSubscriptionService extends IntentService {
 		}
 	}
 
+	private void updateSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
+		Uri uri = Uri.withAppendedPath(PodcastCatcherContract.SubscriptionItem.CONTENT_URI, String.valueOf(currSubscriptionItem.getId()));
+		getContentResolver().update(uri, values, where, selectionArgs)
+	}
+
 	private void insertSubscriptionItem(long subscriptionId, SubscriptionItem currSubscriptionItem) {
-		getContentResolver().insert(PodcastCatcherContract.SubscriptionItem.CONTENT_URI, podcastManager.toContentValues(currSubscriptionItem));
+		getContentResolver().insert(PodcastCatcherContract.SubscriptionItem.CONTENT_URI, podcastManager.toContentValues(subscriptionId, currSubscriptionItem));
 	}
 
 	@SuppressWarnings("deprecation")
