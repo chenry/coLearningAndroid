@@ -107,7 +107,7 @@ public class SubscriptionDetailFragment extends Fragment {
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			return inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
+			return inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
 		}
 
 		@Override
@@ -115,7 +115,6 @@ public class SubscriptionDetailFragment extends Fragment {
 			SubscriptionItem subscriptionItem = subscriptionItemCursor.getSubscriptionItem();
 
 			((TextView) view.findViewById(android.R.id.text1)).setText(subscriptionItem.getTitle());
-			((TextView) view.findViewById(android.R.id.text2)).setText(subscriptionItem.getItemDesc());
 		}
 	}
 }

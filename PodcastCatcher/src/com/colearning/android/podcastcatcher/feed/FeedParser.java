@@ -60,6 +60,7 @@ public class FeedParser {
 		private Subscription subscription;
 		private SubscriptionItem currSubscriptionItem;
 		private boolean inItem = false;
+		private boolean inImage = false;
 		private StringWriter valueSw = null;
 		private boolean startNewStringBuffer = true;
 
@@ -72,8 +73,17 @@ public class FeedParser {
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			if ("item".equals(localName)) {
 				inItem = true;
+				inImage = false;
 				currSubscriptionItem = new SubscriptionItem();
 				subscription.addSubscriptionItem(currSubscriptionItem);
+			}
+
+			if (!inItem && "image".equals(localName)) {
+				inImage = true;
+			}
+
+			if ("enclosure".equals(localName)) {
+				currSubscriptionItem.setMediaUrl(attributes.getValue("url"));
 			}
 		}
 
@@ -91,6 +101,10 @@ public class FeedParser {
 				endSubscriptionItemElement(uri, localName, qName, value);
 			} else {
 				endSubscriptionElement(uri, localName, qName, value);
+			}
+
+			if (inImage) {
+				inImage = false;
 			}
 
 		}
@@ -113,8 +127,8 @@ public class FeedParser {
 				subscription.setLastPubDate(getDateIfAvailable(value));
 			}
 
-			if ("image/url".equals(localName)) {
-				// FIXME CH: implement this later
+			if (inImage && "url".equals(localName)) {
+				subscription.setImageUrl(value);
 			}
 
 			if ("media:category".equals(qName)) {
@@ -141,8 +155,6 @@ public class FeedParser {
 				currSubscriptionItem.setPubDate(getDateIfAvailable(value));
 			} else if ("guid".equals(localName)) {
 				currSubscriptionItem.setGuidId(value);
-				// private String thumbnailUrl;
-				// private String mediaUrl;
 			} else if ("link".equals(localName)) {
 				currSubscriptionItem.setLinkUrl(value);
 			} else if ("description".equals(localName)) {
