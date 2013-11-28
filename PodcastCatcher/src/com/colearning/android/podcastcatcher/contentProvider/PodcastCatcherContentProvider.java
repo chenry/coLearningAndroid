@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
 import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource;
@@ -18,6 +19,7 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	private static final int SUBSCRIPTIONS_LIST = 1;
 	private static final int SUBSCRIPTION_ID = 2;
 	private static final int SUBSCRIPTION_ITEMS_LIST = 3;
+	private static final int SUBSCRIPTION_ITEM_ID = 4;
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	private PodcastCatcherDatasource mPodcastDatasource;
@@ -26,6 +28,7 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.Subscription.BASE_PATH, SUBSCRIPTIONS_LIST);
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.Subscription.BASE_PATH + "/#", SUBSCRIPTION_ID);
 		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.SubscriptionItem.BASE_PATH, SUBSCRIPTION_ITEMS_LIST);
+		sURIMatcher.addURI(PodcastCatcherContract.AUTHORITY, PodcastCatcherContract.SubscriptionItem.BASE_PATH + "/#", SUBSCRIPTION_ITEM_ID);
 	}
 
 	@Override
@@ -47,6 +50,10 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 			// no filter
 			queryBuilder.setTables(PodcastCatcherContract.Subscription.TABLE_NAME);
 			break;
+		case SUBSCRIPTION_ITEM_ID:
+			queryBuilder.setTables(PodcastCatcherContract.SubscriptionItem.TABLE_NAME);
+			queryBuilder.appendWhere(PodcastCatcherContract.Subscription.Columns._ID + "=" + uri.getLastPathSegment());
+			break;
 		case SUBSCRIPTION_ITEMS_LIST:
 			queryBuilder.setTables(PodcastCatcherContract.SubscriptionItem.TABLE_NAME);
 			break;
@@ -61,16 +68,35 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		int uriType = sURIMatcher.match(uri);
+		int updateCount = 0;
 
-		if (uriType != SUBSCRIPTION_ID) {
+		String where = null;
+		String additionalWhere = null;
+		SQLiteDatabase db = mPodcastDatasource.getWritableDatabase();
+		switch (uriType) {
+		case SUBSCRIPTION_ID:
+			additionalWhere = (TextUtils.isEmpty(selection)) ? "" : " AND (" + selection + ")";
+			where = PodcastCatcherContract.Subscription.Columns._ID + " = " + uri.getLastPathSegment() + additionalWhere;
+			updateCount = db.update(PodcastCatcherContract.Subscription.TABLE_NAME, values, where, selectionArgs);
+			break;
+
+		case SUBSCRIPTIONS_LIST:
+			db.update(PodcastCatcherContract.Subscription.TABLE_NAME, values, selection, selectionArgs);
+			break;
+
+		case SUBSCRIPTION_ITEM_ID:
+			additionalWhere = (TextUtils.isEmpty(selection)) ? "" : " AND (" + selection + ")";
+			where = PodcastCatcherContract.SubscriptionItem.Columns._ID + " = " + uri.getLastPathSegment() + additionalWhere;
+			updateCount = db.update(PodcastCatcherContract.Subscription.TABLE_NAME, values, where, selectionArgs);
+
+			break;
+
+		case SUBSCRIPTION_ITEMS_LIST:
+			db.update(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		default:
 			throw new IllegalArgumentException("Unsupported uri: " + uri + " Type: " + getType(uri));
 		}
-
-		String id = uri.getLastPathSegment();
-		String where = PodcastCatcherContract.Subscription.Columns._ID + " = " + id;
-
-		SQLiteDatabase db = mPodcastDatasource.getWritableDatabase();
-		int updateCount = db.update(PodcastCatcherContract.Subscription.TABLE_NAME, values, where, null);
 
 		if (updateCount > 0) {
 			getContext().getContentResolver().notifyChange(uri, null);
@@ -80,17 +106,29 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int delete(Uri uri, String string, String[] stringArgs) {
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		int deletedRecordsCount = 0;
 		int uriType = sURIMatcher.match(uri);
+		String additionalWhere = null;
+		String whereClause = null;
 		switch (uriType) {
 		case SUBSCRIPTION_ID:
-			String id = uri.getLastPathSegment();
-			String whereClause = PodcastCatcherContract.Subscription.Columns._ID + " = " + id;
-			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.TABLE_NAME, whereClause, null);
+			additionalWhere = (TextUtils.isEmpty(selection)) ? "" : " AND (" + selection + ")";
+			whereClause = PodcastCatcherContract.Subscription.Columns._ID + " = " + uri.getLastPathSegment() + additionalWhere;
+			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.TABLE_NAME, whereClause, selectionArgs);
 			break;
 		case SUBSCRIPTIONS_LIST:
-			mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.Columns._ID, null, null);
+			mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.Subscription.TABLE_NAME, selection, selectionArgs);
+			break;
+
+		case SUBSCRIPTION_ITEM_ID:
+			additionalWhere = (TextUtils.isEmpty(selection)) ? "" : " AND (" + selection + ")";
+			whereClause = PodcastCatcherContract.Subscription.Columns._ID + " = " + uri.getLastPathSegment() + additionalWhere;
+			deletedRecordsCount = mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, whereClause,
+					selectionArgs);
+			break;
+		case SUBSCRIPTION_ITEMS_LIST:
+			mPodcastDatasource.getWritableDatabase().delete(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, selection, selectionArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unrecognized uri: " + uri);
@@ -114,7 +152,8 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 
 			break;
 		case SUBSCRIPTION_ITEMS_LIST:
-			mPodcastDatasource.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, values);
+			insertedId = mPodcastDatasource.getWritableDatabase().insert(PodcastCatcherContract.SubscriptionItem.TABLE_NAME, null, values);
+			insertedUri = uriForId(uri, insertedId);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported operation for this uri: " + uri);
@@ -143,6 +182,10 @@ public class PodcastCatcherContentProvider extends ContentProvider {
 			return PodcastCatcherContract.Subscription.CONTENT_ITEM_TYPE;
 		case SUBSCRIPTIONS_LIST:
 			return PodcastCatcherContract.Subscription.CONTENT_TYPE;
+		case SUBSCRIPTION_ITEM_ID:
+			return PodcastCatcherContract.SubscriptionItem.CONTENT_TYPE;
+		case SUBSCRIPTION_ITEMS_LIST:
+			return PodcastCatcherContract.SubscriptionItem.CONTENT_TYPE;
 		default:
 			throw new IllegalArgumentException("Unsupported uri: " + uri);
 		}

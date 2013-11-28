@@ -29,6 +29,7 @@ public class SubscriptionDetailFragment extends Fragment {
 	private Subscription subscription;
 	private PodcastCatcherManager podcastCatcherManager;
 	private SubscriptionItemCursor subscriptionItemsCursor;
+	private long subscriptionId;
 
 	public static SubscriptionDetailFragment create(Long subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
@@ -46,7 +47,7 @@ public class SubscriptionDetailFragment extends Fragment {
 		setHasOptionsMenu(true);
 		podcastCatcherManager = PodcastCatcherManager.create(getActivity());
 
-		Long subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
+		subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
 		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
 		subscriptionItemsCursor = podcastCatcherManager.querySubscriptionItems(subscriptionId);
 	}
@@ -72,9 +73,15 @@ public class SubscriptionDetailFragment extends Fragment {
 
 	private void handleDeleteSubscription() {
 		ContentResolver cr = getActivity().getContentResolver();
+		// delete the subscription items
+		int deletedSubscriptionItemCount = cr.delete(PodcastCatcherContract.SubscriptionItem.CONTENT_URI,
+				PodcastCatcherContract.SubscriptionItem.Columns.SUBSCRIPTION_ID + " = ?", new String[] { String.valueOf(subscriptionId) });
+		Log.i(TAG, "Deleted Subscription Item Count: " + deletedSubscriptionItemCount);
+
+		// delete the subscription
 		Uri uri = Uri.withAppendedPath(PodcastCatcherContract.Subscription.CONTENT_URI, String.valueOf(subscription.getId()));
 		int deleteCount = cr.delete(uri, null, null);
-		Log.i(TAG, "Deleted: " + deleteCount);
+		Log.i(TAG, "Deleted Subscription Count: " + deleteCount);
 	}
 
 	@Override
