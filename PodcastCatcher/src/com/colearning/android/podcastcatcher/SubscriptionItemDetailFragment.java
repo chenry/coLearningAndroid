@@ -29,8 +29,8 @@ public class SubscriptionItemDetailFragment extends Fragment implements
 		return fragment;
 	}
 
-	private PodcastCatcherManager podcastManager;
-	private long subscriptionItemId;
+	private static PodcastCatcherManager podcastManager;
+	private static long subscriptionItemId;
 	private Context context;
 	private TextView txtItemTitle;
 	private SubscriptionItem mSubscriptionItem;
@@ -39,6 +39,7 @@ public class SubscriptionItemDetailFragment extends Fragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		context = getActivity();
 		podcastManager = PodcastCatcherManager.create(getActivity());
 
@@ -88,7 +89,7 @@ public class SubscriptionItemDetailFragment extends Fragment implements
 		// do nothing.
 	}
 
-	private class SubscriptionItemLoader extends DataLoader<SubscriptionItem> {
+	private static class SubscriptionItemLoader extends DataLoader<SubscriptionItem> {
 
 		public SubscriptionItemLoader(Context context) {
 			super(context);
