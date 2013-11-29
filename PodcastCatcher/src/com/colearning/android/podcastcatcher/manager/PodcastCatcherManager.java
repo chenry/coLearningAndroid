@@ -71,7 +71,19 @@ public class PodcastCatcherManager {
 		cursor.close();
 		return subscription;
 	}
-
+	
+	public SubscriptionItem findSubscriptionItem(long subscriptionItemId) {
+		SubscriptionItemCursor cursor = podcastDatasource.findSubscriptionItemById(subscriptionItemId);
+		cursor.moveToFirst();
+		SubscriptionItem subscriptionItem = null;
+		if (!cursor.isAfterLast()) {
+			subscriptionItem = cursor.getSubscriptionItem();
+		}
+		cursor.close();
+		return subscriptionItem;
+	}
+	
+	
 	public SubscriptionItemCursor querySubscriptionItems(long subscriptionId) {
 		return podcastDatasource.findSubscriptionItemsBySubscriptionId(subscriptionId);
 	}

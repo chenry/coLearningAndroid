@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SubscriptionListActivity"
+            android:name="com.colearning.android.podcastcatcher.SubscriptionListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SubscriptionDetailActivity"
+            android:name="com.colearning.android.podcastcatcher.SubscriptionDetailActivity"
             android:label="@string/title_activity_subscription_detail" >
         </activity>
 
@@ -37,6 +37,11 @@
             android:authorities="com.colearning.android.podcastcatcher"
             android:multiprocess="true" >
         </provider>
+
+        <activity
+            android:name="com.colearning.android.podcastcatcher.SubscriptionItemDetailActivity"
+            android:label="@string/title_activity_subscription_item_detail" >
+        </activity>
     </application>
 
 </manifest>

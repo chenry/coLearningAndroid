@@ -10,6 +10,7 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.colearning.android.podcastcatcher.contract.PodcastCatcherContract;
+import com.colearning.android.podcastcatcher.db.PodcastCatcherDatasource.SubscriptionItemCursor;
 import com.colearning.android.podcastcatcher.model.Subscription;
 import com.colearning.android.podcastcatcher.model.SubscriptionItem;
 
@@ -102,6 +103,21 @@ public class PodcastCatcherDatasource {
 				"1");
 		//@formatter:on
 		return new SubscriptionCursor(cursor);
+	}
+
+	public SubscriptionItemCursor findSubscriptionItemById(long id) {
+		//@formatter:off
+		Cursor cursor = dbHelper.getReadableDatabase().query(
+				PodcastCatcherContract.SubscriptionItem.TABLE_NAME, 
+				null, 
+				PodcastCatcherContract.SubscriptionItem.Columns._ID + " = ?", 
+				new String[] { String.valueOf(id) }, 
+				null, 
+				null, 
+				null, 
+				"1");
+		//@formatter:on
+		return new SubscriptionItemCursor(cursor);
 	}
 
 	public SubscriptionItemCursor findSubscriptionItemsBySubscriptionId(long subscriptionId) {

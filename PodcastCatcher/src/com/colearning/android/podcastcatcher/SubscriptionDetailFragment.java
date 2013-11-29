@@ -14,6 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,6 +33,12 @@ public class SubscriptionDetailFragment extends Fragment {
 	private PodcastCatcherManager podcastCatcherManager;
 	private SubscriptionItemCursor subscriptionItemsCursor;
 	private long subscriptionId;
+	private ListView lvSubscriptionItems;
+	private SubscriptionItemSelectedListener subscriptionItemSelectedListener;
+	
+	public interface SubscriptionItemSelectedListener {
+		public void subscriptionItemSelected(long subscriptionItemId);
+	}
 
 	public static SubscriptionDetailFragment create(Long subscriptionId) {
 		SubscriptionDetailFragment fragment = new SubscriptionDetailFragment();
@@ -50,6 +59,8 @@ public class SubscriptionDetailFragment extends Fragment {
 		subscriptionId = getArguments().getLong(SUBSCRIPTION_ID);
 		subscription = podcastCatcherManager.findSubscriptionById(subscriptionId);
 		subscriptionItemsCursor = podcastCatcherManager.querySubscriptionItems(subscriptionId);
+		
+		this.subscriptionItemSelectedListener = (SubscriptionItemSelectedListener) getActivity();
 	}
 
 	@Override
@@ -90,14 +101,26 @@ public class SubscriptionDetailFragment extends Fragment {
 
 		((TextView) view.findViewById(R.id.txtTitleValue)).setText(subscription.getTitle());
 		((TextView) view.findViewById(R.id.txtSubTitleValue)).setText(subscription.getSubTitle());
-		((TextView) view.findViewById(R.id.txtAuthorValue)).setText(subscription.getAuthor());
-		((TextView) view.findViewById(R.id.txtCategoryValue)).setText(subscription.getCategory());
+		((TextView) view.findViewById(R.id.txtItemAuthorValue)).setText(subscription.getAuthor());
+		((TextView) view.findViewById(R.id.txtItemFileUrlValue)).setText(subscription.getCategory());
 		((TextView) view.findViewById(R.id.txtLinkValue)).setText(subscription.getFeedUrl());
 		((TextView) view.findViewById(R.id.txtSummaryValue)).setText(subscription.getSummary());
 
-		ListView lvSubscriptionItems = (ListView) view.findViewById(R.id.listViewSubscriptionItems);
-
+		lvSubscriptionItems = (ListView) view.findViewById(R.id.listViewSubscriptionItems);
 		lvSubscriptionItems.setAdapter(new SubscriptionItemsAdapter(getActivity(), subscriptionItemsCursor));
+		OnItemClickListener onItemClickListener = new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				CursorAdapter obj = (CursorAdapter) lvSubscriptionItems.getAdapter();
+				Log.i(TAG, "The object is: " + obj.getItemId(position));
+				subscriptionItemSelectedListener.subscriptionItemSelected(obj.getItemId(position));
+			}
+			
+		};
+		lvSubscriptionItems.setOnItemClickListener(onItemClickListener);
+		
 
 		return view;
 	}
