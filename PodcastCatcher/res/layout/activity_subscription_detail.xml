@@ -33,7 +33,7 @@
             android:text="@string/subscription_author_label"  />
 
         <TextView
-            android:id="@+id/txtAuthorValue"
+            android:id="@+id/txtItemAuthorValue"
             style="@style/TableRow_Value" />
     </TableRow>
 
@@ -44,7 +44,7 @@
             android:text="@string/subscription_category_label"  />
 
         <TextView
-            android:id="@+id/txtCategoryValue"
+            android:id="@+id/txtItemFileUrlValue"
             style="@style/TableRow_Value" />
     </TableRow>
 

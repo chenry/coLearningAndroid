@@ -14,4 +14,7 @@
     <string name="refresh_feeds">Refresh</string>
     <string name="feed_url">Feed URL</string>
     <string name="delete_subscription">Delete</string>
+    <string name="title_activity_subscription_item_detail">SubscriptionItemDetailActivity</string>
+    <string name="subscription_item_title">Title</string>
+
 </resources>
